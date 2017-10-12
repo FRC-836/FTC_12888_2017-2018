@@ -103,7 +103,49 @@ public class tank_auto extends LinearOpMode {
         backLeftDrive.setPower(0.0);
         backRightDrive.setPower(1.0);
 
-        sleep(1250);
+        sleep(1300);
+
+        frontLeftDrive.setPower(1.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(1.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(2000);
+
+        frontLeftDrive.setPower(0.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(0.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(1300);
+
+        frontLeftDrive.setPower(1.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(1.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(2000);
+
+        frontLeftDrive.setPower(0.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(0.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(1300);
+
+        frontLeftDrive.setPower(1.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(1.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(2000);
+
+        frontLeftDrive.setPower(0.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(0.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(1300);
 
         frontLeftDrive.setPower(0.0);
         frontRightDrive.setPower(0.0);
