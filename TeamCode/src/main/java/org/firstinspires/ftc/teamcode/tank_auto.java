@@ -60,7 +60,7 @@ public class tank_auto extends LinearOpMode {
     private DcMotor frontLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
-    private DcMotor backLeftdrive  = null;
+    private DcMotor backLeftDrive  = null;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -69,21 +69,47 @@ public class tank_auto extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontRightDrive  = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        backRightDrive  = hardwareMap.get(DcMotor.class, "backRightDrive");
-        backLeftdrive = hardwareMap.get(DcMotor.class, "backLeftdrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftdrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set stopping behavior
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        hi
+        frontLeftDrive.setPower(1.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(1.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(2000);
+
+        frontLeftDrive.setPower(0.0);
+        frontRightDrive.setPower(1.0);
+        backLeftDrive.setPower(0.0);
+        backRightDrive.setPower(1.0);
+
+        sleep(1250);
+
+        frontLeftDrive.setPower(0.0);
+        frontRightDrive.setPower(0.0);
+        backLeftDrive.setPower(0.0);
+        backRightDrive.setPower(0.0);
+
+
     }
 }
