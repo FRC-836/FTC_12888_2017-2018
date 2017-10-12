@@ -84,6 +84,6 @@ public class tank_auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        
+        hi
     }
 }
