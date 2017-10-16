@@ -114,7 +114,7 @@ public class tank_auto extends LinearOpMode {
 
         swingTurnLeft(-1.0, 1300);
         backward(1.0, 2000);
-        
+
         setDrive(0.0, 0.0);
 
     }
