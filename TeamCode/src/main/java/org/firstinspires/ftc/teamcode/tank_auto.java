@@ -91,67 +91,43 @@ public class tank_auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        frontLeftDrive.setPower(1.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(1.0);
-        backRightDrive.setPower(1.0);
+        forward(1.0, 2000);
+        swingTurnLeft(1.0, 1300);
 
-        sleep(2000);
+        forward(1.0, 2000);
+        swingTurnLeft(1.0, 1300);
 
-        frontLeftDrive.setPower(0.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(0.0);
-        backRightDrive.setPower(1.0);
+        forward(1.0, 2000);
+        swingTurnLeft(1.0, 1300);
 
-        sleep(1300);
+        forward(1.0, 2000);
+        swingTurnLeft(1.0, 1300);
 
-        frontLeftDrive.setPower(1.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(1.0);
-        backRightDrive.setPower(1.0);
+        swingTurnLeft(-1.0, 1300);
+        backward(1.0, 2000)
 
-        sleep(2000);
+        setDrive(0.0, 0.0);
 
-        frontLeftDrive.setPower(0.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(0.0);
-        backRightDrive.setPower(1.0);
+    }
 
-        sleep(1300);
+    private void backward(double v, int i) {
+        
+    }
 
-        frontLeftDrive.setPower(1.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(1.0);
-        backRightDrive.setPower(1.0);
+    private void setDrive(double leftPower, double rightPower) {
+        frontLeftDrive.setPower(leftPower);
+        frontRightDrive.setPower(rightPower);
+        backLeftDrive.setPower(leftPower);
+        backRightDrive.setPower(rightPower);
+    }
 
-        sleep(2000);
+    private void swingTurnLeft(double power, int time) {
+        setDrive(0.0, power);
+        sleep(time);
+    }
 
-        frontLeftDrive.setPower(0.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(0.0);
-        backRightDrive.setPower(1.0);
-
-        sleep(1300);
-
-        frontLeftDrive.setPower(1.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(1.0);
-        backRightDrive.setPower(1.0);
-
-        sleep(2000);
-
-        frontLeftDrive.setPower(0.0);
-        frontRightDrive.setPower(1.0);
-        backLeftDrive.setPower(0.0);
-        backRightDrive.setPower(1.0);
-
-        sleep(1300);
-
-        frontLeftDrive.setPower(0.0);
-        frontRightDrive.setPower(0.0);
-        backLeftDrive.setPower(0.0);
-        backRightDrive.setPower(0.0);
-
-
+    private void forward(double power, int time) {
+        setDrive(power, power);
+        sleep(time);
     }
 }
