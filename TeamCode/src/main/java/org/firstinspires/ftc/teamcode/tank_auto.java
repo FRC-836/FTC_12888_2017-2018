@@ -119,14 +119,9 @@ public class tank_auto extends LinearOpMode {
 
     }
 
-<<<<<<< HEAD
-    private void backward(double power, int duration) {
-        
-=======
     private void backward(double power, int time) {
         setDrive(-power, -power);
         sleep(time);
->>>>>>> 1d4522d5c34abe005bd9452bcf0cc357eb893200
     }
 
     private void setDrive(double leftPower, double rightPower) {
