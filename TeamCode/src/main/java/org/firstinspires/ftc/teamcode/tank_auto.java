@@ -103,16 +103,30 @@ public class tank_auto extends LinearOpMode {
         forward(1.0, 2000);
         swingTurnLeft(1.0, 1300);
 
-        swingTurnLeft(1.0, 1300);
-        backward(-1.0, 2000)
+        swingTurnLeft(-1.0, 1300);
+        backward(1.0, 2000);
 
+        swingTurnLeft(-1.0, 1300);
+        backward(1.0, 2000);
+
+        swingTurnLeft(-1.0, 1300);
+        backward(1.0, 2000);
+
+        swingTurnLeft(-1.0, 1300);
+        backward(1.0, 2000);
 
         setDrive(0.0, 0.0);
 
     }
 
+<<<<<<< HEAD
     private void backward(double power, int duration) {
         
+=======
+    private void backward(double power, int time) {
+        setDrive(-power, -power);
+        sleep(time);
+>>>>>>> 1d4522d5c34abe005bd9452bcf0cc357eb893200
     }
 
     private void setDrive(double leftPower, double rightPower) {
