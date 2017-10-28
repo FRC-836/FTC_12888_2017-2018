@@ -61,6 +61,9 @@ public class tank_auto extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
     private DcMotor backLeftDrive  = null;
+
+    private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -91,32 +94,7 @@ public class tank_auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        forward(1.0, 2000);
-        swingTurnLeft(1.0, 1300);
-
-        forward(1.0, 2000);
-        swingTurnLeft(1.0, 1300);
-
-        forward(1.0, 2000);
-        swingTurnLeft(1.0, 1300);
-
-        forward(1.0, 2000);
-        swingTurnLeft(1.0, 1300);
-
-        swingTurnLeft(-1.0, 1300);
-        backward(1.0, 2000);
-
-        swingTurnLeft(-1.0, 1300);
-        backward(1.0, 2000);
-
-        swingTurnLeft(-1.0, 1300);
-        backward(1.0, 2000);
-
-        swingTurnLeft(-1.0, 1300);
-        backward(1.0, 2000);
-
-        setDrive(0.0, 0.0);
-
+        moveStraightEncoder(8.0);
     }
 
     private void backward(double power, int time) {
@@ -140,4 +118,14 @@ public class tank_auto extends LinearOpMode {
         setDrive(power, power);
         sleep(time);
     }
+
+    private void moveStraightEncoder(double dist_feet){
+        int end_pos = frontLeftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+        setDrive(1.0, 1.0);
+        while(frontLeftDrive.getCurrentPosition()<end_pos){
+
+        }
+        setDrive(0.0, 0.0);
+    }
+
 }
