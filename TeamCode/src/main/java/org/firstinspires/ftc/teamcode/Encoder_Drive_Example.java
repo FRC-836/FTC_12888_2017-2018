@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -51,15 +52,17 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Zach's Cool Code", group="Linear Opmode")
-public class Autonomous_test extends LinearOpMode {
+@Autonomous(name="Robbie's tank auto", group="Linear Opmode")
+public class Encoder_Drive_Example extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor backLeftDrive = null;
     private DcMotor frontLeftDrive = null;
-    private DcMotor backRightDrive = null;
     private DcMotor frontRightDrive = null;
+    private DcMotor backRightDrive = null;
+    private DcMotor backLeftDrive  = null;
+
+    private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
 
     @Override
     public void runOpMode() {
@@ -69,38 +72,60 @@ public class Autonomous_test extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontRightDrive  = hardwareMap.get(DcMotor.class, "frontRightDrive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set stopping behavior
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        moveStraightTime(4.0);
+        moveStraightEncoder(8.0);
     }
+
+    private void backward(double power, int time) {
+        setDrive(-power, -power);
+        sleep(time);
+    }
+
     private void setDrive(double leftPower, double rightPower) {
-        frontRightDrive.setPower(rightPower);
-        backRightDrive.setPower(rightPower);
         frontLeftDrive.setPower(leftPower);
+        frontRightDrive.setPower(rightPower);
         backLeftDrive.setPower(leftPower);
+        backRightDrive.setPower(rightPower);
     }
-    private void moveStraightTime(double feet) {
-        setDrive(0.8, 0.8);
-        sleep(3500);
+
+    private void swingTurnLeft(double power, int time) {
+        setDrive(0.0, power);
+        sleep(time);
+    }
+
+    private void forward(double power, int time) {
+        setDrive(power, power);
+        sleep(time);
+    }
+
+    private void moveStraightEncoder(double dist_feet){
+        int end_pos = frontLeftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+        setDrive(1.0, 1.0);
+        while(frontLeftDrive.getCurrentPosition()<end_pos){
+
+        }
         setDrive(0.0, 0.0);
     }
-    private void turntime(double degree) {
-        setDrive(1.0, -1.0);
-        sleep(2000);
-        setDrive(0.0, 0.0);
-    }
+
 }

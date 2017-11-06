@@ -53,8 +53,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Relic_Recovery", group="Iterative Opmode")
-
-public class Relic_Recovery_Bot extends OpMode
+public class Relic_Recovery_Teleop extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
