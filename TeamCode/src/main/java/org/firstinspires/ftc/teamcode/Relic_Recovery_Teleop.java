@@ -63,6 +63,8 @@ public class Relic_Recovery_Teleop extends OpMode
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
+    private boolean hasCube = true;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -94,6 +96,7 @@ public class Relic_Recovery_Teleop extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        drop();
     }
 
     /*
@@ -109,6 +112,7 @@ public class Relic_Recovery_Teleop extends OpMode
     @Override
     public void start() {
         runtime.reset();
+        grab();
     }
 
     /*
@@ -131,13 +135,25 @@ public class Relic_Recovery_Teleop extends OpMode
         // Set lift motor(s)
         double lift_power;
         if (gamepad1.right_trigger > 0.5f){
-            lift_power = 0.9;
+            // Lift Arm
+            if (hasCube)
+                lift_power = 0.9;
+            else
+                lift_power = 0.7;
         }
         else if(gamepad1.left_trigger > 0.5f){
-            lift_power = -0.2;
+            // Lower Arm
+            if (hasCube)
+                lift_power = -0.2;
+            else
+                lift_power = -0.4;
         }
         else {
-            lift_power = 0.0;
+            // Keep Arm Still
+            if (hasCube)
+                lift_power = 0.1;
+            else
+                lift_power = 0.0;
         }
         lift(lift_power);
 
@@ -174,9 +190,11 @@ public class Relic_Recovery_Teleop extends OpMode
     private void grab(){
         leftIntake.setPosition(0.75);
         rightIntake.setPosition(0.75);
+        hasCube = true;
     }
     private void drop(){
-       leftIntake.setPosition(0.15);
-       rightIntake.setPosition(0.15);
+        leftIntake.setPosition(0.15);
+        rightIntake.setPosition(0.15);
+        hasCube = false;
     }
 }
