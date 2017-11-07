@@ -63,6 +63,8 @@ public class Relic_Recovery_Teleop extends OpMode
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
+    private final double JOYSTICK_DEADZONE = 0.05;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -120,6 +122,15 @@ public class Relic_Recovery_Teleop extends OpMode
         // Set drive motors
         double forward_power = -gamepad1.left_stick_y;
         double turn_power = gamepad1.right_stick_x;
+        if (Math.abs(forward_power) < JOYSTICK_DEADZONE)
+        {
+            forward_power = 0.0;
+        }
+        if (Math.abs(turn_power) < JOYSTICK_DEADZONE)
+        {
+            turn_power = 0.0;
+        }
+
         //telemetry.addData("Joystick Values","Forward: %.2f, Turn: %.2f", forward_power, turn_power);
 
         double left_power = forward_power + turn_power;
