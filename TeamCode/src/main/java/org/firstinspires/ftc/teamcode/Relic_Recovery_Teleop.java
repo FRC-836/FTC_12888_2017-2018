@@ -81,9 +81,9 @@ public class Relic_Recovery_Teleop extends OpMode
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        arm.setDirection(DcMotor.Direction.REVERSE);//TODO
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotor.Direction.REVERSE);
         rightIntake.setDirection(Servo.Direction.FORWARD);
         leftIntake.setDirection(Servo.Direction.REVERSE);
 
@@ -119,17 +119,19 @@ public class Relic_Recovery_Teleop extends OpMode
 
         // Set drive motors
         double forward_power = -gamepad1.left_stick_y;
-        double turn_power = -gamepad1.right_stick_x;//TODO: This value shouldn't need to be negated. Figure out what's happening here.
+        double turn_power = gamepad1.right_stick_x;
+        //telemetry.addData("Joystick Values","Forward: %.2f, Turn: %.2f", forward_power, turn_power);
 
         double left_power = forward_power + turn_power;
         double right_power = forward_power - turn_power;
+        //telemetry.addData("Motor Values","Left: %.2f, Right: %.2f", left_power, right_power);
 
         setDrive(left_power, right_power);
 
         // Set lift motor(s)
         double lift_power;
         if (gamepad1.right_trigger > 0.5f){
-            lift_power = 1.0;
+            lift_power = 0.9;
         }
         else if(gamepad1.left_trigger > 0.5f){
             lift_power = -0.2;
@@ -149,7 +151,6 @@ public class Relic_Recovery_Teleop extends OpMode
 
         telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
         telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
-        telemetry.addData("Triggers","Left: %.2f | Right: %.2f", gamepad1.left_trigger, gamepad1.right_trigger);
         telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
         telemetry.update();
     }
