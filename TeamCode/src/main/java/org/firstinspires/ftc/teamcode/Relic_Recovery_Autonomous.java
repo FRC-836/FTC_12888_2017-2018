@@ -1,26 +1,32 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Relic_Recovery", group="Competition")
-public class Relic_Recovery_Teleop extends OpMode
-{
+@Autonomous(name="Relic_Recovery", group="Competition")
+public class Relic_Recovery_Autonomous extends LinearOpMode {
+
     // Declare OpMode members.
+    private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor arm = null;
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
-    private final double JOYSTICK_DEADZONE = 0.05;
-    private boolean hasCube = true;
+    private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
 
     @Override
-    public void init() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -39,7 +45,7 @@ public class Relic_Recovery_Teleop extends OpMode
         rightIntake.setDirection(Servo.Direction.FORWARD);
         leftIntake.setDirection(Servo.Direction.REVERSE);
 
-        // set the zero power behavior of the motors
+        // Set stopping behavior
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -48,81 +54,35 @@ public class Relic_Recovery_Teleop extends OpMode
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         drop();
-    }
 
-    @Override
-    public void init_loop() {
-    }
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
 
-    @Override
-    public void start() {
-        grab();
-    }
+        setDrive(1.0,0.0);
+        sleep(1000);
+        setDrive(0.0,1.0);
+        sleep(1000);
+        setDrive(0.0,0.0);
+        //moveStraightEncoder(8.0);
 
-    @Override
-    public void loop() {
-
-        // Set drive motors
-        double forward_power = -gamepad1.left_stick_y;
-        double turn_power = gamepad1.right_stick_x;
-        if (Math.abs(forward_power) < JOYSTICK_DEADZONE)
-        {
-            forward_power = 0.0;
-        }
-        if (Math.abs(turn_power) < JOYSTICK_DEADZONE)
-        {
-            turn_power = 0.0;
-        }
-
-        //telemetry.addData("Joystick Values","Forward: %.2f, Turn: %.2f", forward_power, turn_power);
-
-        double left_power = forward_power + turn_power;
-        double right_power = forward_power - turn_power;
-        //telemetry.addData("Motor Values","Left: %.2f, Right: %.2f", left_power, right_power);
-
-        setDrive(left_power, right_power);
-
-        // Set lift motor(s)
-        double lift_power;
-        if (gamepad1.right_trigger > 0.5f){
-            // Lift Arm
-            if (hasCube)
-                lift_power = 0.9;
-            else
-                lift_power = 0.7;
-        }
-        else if(gamepad1.left_trigger > 0.5f){
-            // Lower Arm
-            if (hasCube)
-                lift_power = -0.2;
-            else
-                lift_power = -0.4;
-        }
-        else {
-            // Keep Arm Still
-            if (hasCube)
-                lift_power = 0.1;
-            else
-                lift_power = 0.0;
-        }
-        lift(lift_power);
-
-        // set intake power
-        if (gamepad1.right_bumper){
-            grab();
-        }
-        else if (gamepad1.left_bumper){
-            drop();
-        }
-
-        telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
-        telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
-        telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
+        telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
         telemetry.update();
+        while(true);
     }
 
-    @Override
-    public void stop() {
+    private void forward(double power, long time) {
+        setDrive(power, power);
+        sleep(time);
+    }
+
+    private void moveStraightEncoder(double dist_feet){
+        int end_pos = leftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+        setDrive(1.0, 1.0);
+        while(leftDrive.getCurrentPosition()<end_pos){
+
+        }
+        setDrive(0.0, 0.0);
     }
 
     private void setDrive(double left_power, double right_power) {
@@ -137,12 +97,10 @@ public class Relic_Recovery_Teleop extends OpMode
     private void grab(){
         leftIntake.setPosition(0.75);
         rightIntake.setPosition(0.75);
-        hasCube = true;
     }
 
     private void drop(){
         leftIntake.setPosition(0.15);
         rightIntake.setPosition(0.15);
-        hasCube = false;
     }
 }
