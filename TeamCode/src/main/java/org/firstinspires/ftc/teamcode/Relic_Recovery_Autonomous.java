@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name="Relic_Recovery", group="Competition")
+@Autonomous(name="Relic_Recovery_Auto", group="Competition")
 public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     // Declare OpMode members.
@@ -95,8 +95,8 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     }
 
     private void grab(){
-        leftIntake.setPosition(0.75);
-        rightIntake.setPosition(0.75);
+        leftIntake.setPosition(0.70);
+        rightIntake.setPosition(0.70);
     }
 
     private void drop(){

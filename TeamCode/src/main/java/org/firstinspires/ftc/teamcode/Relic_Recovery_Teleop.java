@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Relic_Recovery", group="Competition")
+@TeleOp(name="Relic_Recovery_Teleop", group="Competition")
 public class Relic_Recovery_Teleop extends OpMode
 {
     // Declare OpMode members.
@@ -135,8 +135,8 @@ public class Relic_Recovery_Teleop extends OpMode
     }
 
     private void grab(){
-        leftIntake.setPosition(0.75);
-        rightIntake.setPosition(0.75);
+        leftIntake.setPosition(0.70);
+        rightIntake.setPosition(0.70);
         hasCube = true;
     }
 
