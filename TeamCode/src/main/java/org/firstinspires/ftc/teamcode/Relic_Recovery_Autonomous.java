@@ -21,7 +21,15 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
+    private pictograph cryptoboxKey = null;
+
     private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
+
+    enum pictograph {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
 
     @Override
     public void runOpMode() {
@@ -58,13 +66,29 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        grab();
 
-        setDrive(1.0,0.0);
-        sleep(1000);
-        setDrive(0.0,1.0);
-        sleep(1000);
-        setDrive(0.0,0.0);
-        //moveStraightEncoder(8.0);
+        // Read the pictograph
+        cryptoboxKey = getPictographKey();
+
+        // Drive straight to cryptobox area
+        // 3 +- 0.625 ft
+        switch(cryptoboxKey)
+        {
+            case LEFT:
+                //Do left action
+                break;
+            case CENTER:
+                //center
+                break;
+            case RIGHT:
+                //right
+                break;
+            default:
+                telemetry.addData("ERROR","cryptobox key is not LEFT, CENTER, or RIGHT.");
+                telemetry.update();
+                while(true);
+        }
 
         telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
         telemetry.update();
@@ -102,5 +126,9 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private void drop(){
         leftIntake.setPosition(0.15);
         rightIntake.setPosition(0.15);
+    }
+
+    private pictograph getPictographKey(){
+        return null;
     }
 }

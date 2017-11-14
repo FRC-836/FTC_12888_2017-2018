@@ -84,7 +84,7 @@ public class Relic_Recovery_Teleop extends OpMode
 
         // Set lift motor(s)
         double lift_power;
-        if (gamepad1.right_trigger > 0.5f){
+        if (gamepad1.left_bumper){
             // Lift Arm
             if (hasCube)
                 lift_power = 0.9;
@@ -111,7 +111,7 @@ public class Relic_Recovery_Teleop extends OpMode
         if (gamepad1.right_bumper){
             grab();
         }
-        else if (gamepad1.left_bumper){
+        else if (gamepad1.right_trigger > 0.5f){
             drop();
         }
 
