@@ -76,19 +76,30 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         switch(cryptoboxKey)
         {
             case LEFT:
-                //Do left action
+                moveStraightEncoder(3.625);
                 break;
             case CENTER:
-                //center
+                moveStraightEncoder(3.0);
                 break;
             case RIGHT:
-                //right
+                moveStraightEncoder(2.375);
                 break;
             default:
                 telemetry.addData("ERROR","cryptobox key is not LEFT, CENTER, or RIGHT.");
                 telemetry.update();
                 while(true);
         }
+
+        compassTurn(90);
+        
+        forward(0.3,1000);
+
+        drop();
+
+        forward(-0.3, 1000)
+
+        compassTurn(180);
+
 
         telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
         telemetry.update();
@@ -98,6 +109,7 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private void forward(double power, long time) {
         setDrive(power, power);
         sleep(time);
+        setDrive(0.0, 0.0);
     }
 
     private void moveStraightEncoder(double dist_feet){
