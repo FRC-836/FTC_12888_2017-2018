@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,6 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous(name="Relic_Recovery_Auto", group="Competition")
 public class Relic_Recovery_Autonomous extends LinearOpMode {
@@ -24,6 +30,10 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private pictograph cryptoboxKey = null;
 
     private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
+
+
+    BNO055IMU imu;
+    Orientation angles;
 
     enum pictograph {
         LEFT,
@@ -44,6 +54,7 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "arm");
         leftIntake = hardwareMap.get(Servo.class, "intakeRight");
         rightIntake = hardwareMap.get(Servo.class, "intakeLeft");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -67,6 +78,8 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         waitForStart();
         runtime.reset();
         grab();
+
+        compassTurn(90.0);
 
         // Read the pictograph
         cryptoboxKey = getPictographKey();
@@ -130,5 +143,37 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     private pictograph getPictographKey(){
         return null;
+    }
+
+    private void compassTurn(double degrees) {
+        float goalAngle = getCurrentDegrees() + ((float) degrees);
+        double drivePower = 1.0;
+        if (degrees < 0.0)
+        {
+            // Turning left
+            setDrive(-drivePower, drivePower);
+            while (getCurrentDegrees() > goalAngle)
+            {
+                telemetry.addData("Angle","%.2f",getCurrentDegrees());
+                telemetry.update();
+            }
+        }
+        else
+        {
+            // Turning right
+            setDrive(drivePower, -drivePower);
+            while (getCurrentDegrees() < goalAngle)
+            {
+                telemetry.addData("Angle","%.2f",getCurrentDegrees());
+                telemetry.update();
+            }
+        }
+        setDrive(0.0, 0.0);
+    }
+
+    private float getCurrentDegrees()
+    {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
     }
 }
