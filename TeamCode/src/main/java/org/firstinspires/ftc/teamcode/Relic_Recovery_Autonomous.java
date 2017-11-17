@@ -109,7 +109,7 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
         drop();
 
-        forward(-0.3, 1000)
+        forward(-0.3, 1000);
 
         compassTurn(180);
 
