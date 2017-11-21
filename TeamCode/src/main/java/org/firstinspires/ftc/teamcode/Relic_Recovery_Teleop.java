@@ -16,6 +16,8 @@ public class Relic_Recovery_Teleop extends OpMode
     private Servo rightIntake = null;
 
     private final double JOYSTICK_DEADZONE = 0.05;
+    private final double INTAKE_CLOSE_POSITION = 0.65;
+    private final double INTAKE_OPEN_POSITION = 0.10;
     private boolean hasCube = true;
 
     @Override
@@ -47,7 +49,6 @@ public class Relic_Recovery_Teleop extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        drop();
     }
 
     @Override
@@ -135,14 +136,17 @@ public class Relic_Recovery_Teleop extends OpMode
     }
 
     private void grab(){
-        leftIntake.setPosition(0.70);
-        rightIntake.setPosition(0.70);
+        setIntake(INTAKE_CLOSE_POSITION);
         hasCube = true;
     }
 
     private void drop(){
-        leftIntake.setPosition(0.15);
-        rightIntake.setPosition(0.15);
+        setIntake(INTAKE_OPEN_POSITION);
         hasCube = false;
+    }
+
+    private void setIntake(double intake_position){
+        leftIntake.setPosition(intake_position);
+        rightIntake.setPosition(intake_position);
     }
 }

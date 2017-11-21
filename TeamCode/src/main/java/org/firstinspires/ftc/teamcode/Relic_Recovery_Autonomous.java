@@ -30,7 +30,8 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private pictograph cryptoboxKey = null;
 
     private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
-
+    private final double INTAKE_CLOSE_POSITION = 0.65;
+    private final double INTAKE_OPEN_POSITION = 0.10;
 
     BNO055IMU imu;
     Orientation angles;
@@ -72,7 +73,8 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        drop();
+
+        setIntake(0.0);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -144,13 +146,16 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     }
 
     private void grab(){
-        leftIntake.setPosition(0.70);
-        rightIntake.setPosition(0.70);
+        setIntake(INTAKE_CLOSE_POSITION);
     }
 
     private void drop(){
-        leftIntake.setPosition(0.15);
-        rightIntake.setPosition(0.15);
+        setIntake(INTAKE_OPEN_POSITION);
+    }
+
+    private void setIntake(double intake_position){
+        leftIntake.setPosition(intake_position);
+        rightIntake.setPosition(intake_position);
     }
 
     private pictograph getPictographKey(){
