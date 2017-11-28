@@ -102,9 +102,9 @@ public class Relic_Recovery_Teleop extends OpMode
         else {
             // Keep Arm Still
             if (hasCube)
-                lift_power = 0.1;
+                lift_power = 0.2;
             else
-                lift_power = 0.0;
+                lift_power = 0.1;
         }
         lift(lift_power);
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,10 +12,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name="Relic_Recovery_Auto", group="Competition")
 public class Relic_Recovery_Autonomous extends LinearOpMode {
@@ -27,20 +33,22 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
-    private pictograph cryptoboxKey = null;
+    private RelicRecoveryVuMark cryptoboxKey = null;
+    private VuforiaTrackable relicTemplate = null;
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private final double DRIVE_EN_COUNT_PER_FT = 1920.0;
+    private final double DRIVE_EN_COUNT_PER_FT = 341.1;
     private final double INTAKE_CLOSE_POSITION = 0.65;
     private final double INTAKE_OPEN_POSITION = 0.10;
+    private final double INTAKE_OPEN_FULLY = 0.0;
+    private final double ENCODER_DRIVE_POWER = 0.3;
+    // COMPASS_PAUSE_TIME - When using compassTurn, it waits COMPASS_PAUSE_TIME milliseconds before
+    // using the compass to ensure the robot has begun moving.
+    private final long COMPASS_PAUSE_TIME = 200;
 
     BNO055IMU imu;
     Orientation angles;
-
-    enum pictograph {
-        LEFT,
-        CENTER,
-        RIGHT
-    }
+    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() {
@@ -74,14 +82,36 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        setIntake(0.0);
+        setIntake(INTAKE_OPEN_FULLY);
+
+        setupVuMarkData();
+        setupIMU();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
         grab();
 
+        moveStraightEncoder(8.0);
+
+        while (opModeIsActive());
+
+        moveStraightEncoder(4.0);
+        sleep(2000);
+        moveStraightEncoder(-2.0);
+        sleep(2000);
+        moveStraightEncoder(4.0);
+
+        while (opModeIsActive());
+
         compassTurn(90.0);
+        sleep(1000);
+        compassTurn(180.0);
+        sleep(1000);
+        compassTurn(-90.0);
+        sleep(1000);
+        compassTurn(-180.0);
+        sleep(10000);
 
         // Read the pictograph
         cryptoboxKey = getPictographKey();
@@ -97,12 +127,9 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
                 moveStraightEncoder(3.0);
                 break;
             case RIGHT:
+            default:
                 moveStraightEncoder(2.375);
                 break;
-            default:
-                telemetry.addData("ERROR","cryptobox key is not LEFT, CENTER, or RIGHT.");
-                telemetry.update();
-                while(true);
         }
 
         compassTurn(90);
@@ -118,8 +145,12 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
         telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
         telemetry.update();
-        while(true);
+        while(opModeIsActive());
     }
+
+    //TO TEST:
+    //moveStraightEncoder
+    //compassTurn
 
     private void forward(double power, long time) {
         setDrive(power, power);
@@ -127,11 +158,36 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         setDrive(0.0, 0.0);
     }
 
+    /*private void moveStraightEncoder(double dist_feet){
+        int left_end_pos = leftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+        int right_end_pos = rightDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+
+        leftDrive.setTargetPosition(left_end_pos);
+        rightDrive.setTargetPosition(right_end_pos);
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setDrive(ENCODER_DRIVE_POWER, ENCODER_DRIVE_POWER);
+        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy())
+        {
+            telemetry.addData("Left has moved","%.2f",((double)(left_end_pos - leftDrive.getCurrentPosition()))/DRIVE_EN_COUNT_PER_FT);
+            telemetry.addData("Right has moved","%.2f",((double)(right_end_pos - rightDrive.getCurrentPosition()))/DRIVE_EN_COUNT_PER_FT);
+            telemetry.update();
+        }
+        setDrive(0.0, 0.0);
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }*/
+
+
     private void moveStraightEncoder(double dist_feet){
         int end_pos = leftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
-        setDrive(1.0, 1.0);
-        while(leftDrive.getCurrentPosition()<end_pos){
-
+        if (dist_feet > 0.0) {
+            setDrive(ENCODER_DRIVE_POWER, ENCODER_DRIVE_POWER);
+            while (leftDrive.getCurrentPosition() < end_pos && opModeIsActive());
+        }
+        else
+        {
+            setDrive(-ENCODER_DRIVE_POWER, -ENCODER_DRIVE_POWER);
+            while (leftDrive.getCurrentPosition() > end_pos && opModeIsActive());
         }
         setDrive(0.0, 0.0);
     }
@@ -158,20 +214,35 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         rightIntake.setPosition(intake_position);
     }
 
-    private pictograph getPictographKey(){
-        return null;
+    private RelicRecoveryVuMark getPictographKey(){
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN)
+        {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        }
+        return vuMark;
     }
 
     private void compassTurn(double degrees) {
-        float goalAngle = getCurrentDegrees() + ((float) degrees);
-        double drivePower = 1.0;
+        float startPos = getCurrentDegrees();
+        float goalAngle = startPos - ((float) degrees);
+        double drivePower = 0.5;
         if (degrees < 0.0)
         {
             // Turning left
             setDrive(-drivePower, drivePower);
-            while (getCurrentDegrees() > goalAngle)
+            if (goalAngle > 175.0) {
+                goalAngle -= 360.0;
+                sleep(COMPASS_PAUSE_TIME);
+                while (getCurrentDegrees() >= startPos && opModeIsActive())
+                {
+                    telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                    telemetry.update();
+                }
+            }
+            while (getCurrentDegrees() < goalAngle && opModeIsActive())
             {
-                telemetry.addData("Angle","%.2f",getCurrentDegrees());
+                telemetry.addData("Angle1","%.2f",getCurrentDegrees());
                 telemetry.update();
             }
         }
@@ -179,9 +250,18 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         {
             // Turning right
             setDrive(drivePower, -drivePower);
-            while (getCurrentDegrees() < goalAngle)
+            if (goalAngle < -175.0) {
+                goalAngle += 360.0;
+                sleep(COMPASS_PAUSE_TIME);
+                while (getCurrentDegrees() <= startPos && opModeIsActive())
+                {
+                    telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                    telemetry.update();
+                }
+            }
+            while (getCurrentDegrees() > goalAngle && opModeIsActive())
             {
-                telemetry.addData("Angle","%.2f",getCurrentDegrees());
+                telemetry.addData("Angle1","%.2f",getCurrentDegrees());
                 telemetry.update();
             }
         }
@@ -192,5 +272,29 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return AngleUnit.DEGREES.normalize(AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle));
+    }
+
+    private void setupVuMarkData()
+    {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "ATR3/Cb/////AAAAGTVIvIjz0kb9u+DtnsWzGj0JigqZYbgQE+XMNBbu/++4Xnjd7/uUpFGFKVr/yZ7lnRorZBA+mpukXprPG9dDy22DQIPjId5gCDNTGs1faBtAwVnoDm8qXxeCgIoRXh7aXbQBCVdy9xusOMwgnJwn2lsINNC7dHUF4Z+azbhfjIjoZoNUsLqUBfnXoO7+Emfu62Nlnl6DQhsKLRcjCE551beyEi2Co6RLn2+so7oCY3Favuwpm4H5+f1TPMBW2fhBJH9g4nEKziL90BTu+jLjA/Pt8LIOa3OQaLy7A8gmf8GLnNFvpYQSSOuE+JCMi55Ebv8POx1MmH20HkklMkpWIdmfM/gKfnDKShnG3bJ7oOg+";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark"); // TODO: May be missing a file
+        relicTemplate = relicTrackables.get(0);
+    }
+
+    private void setupIMU()
+    {
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(parameters);
     }
 }
