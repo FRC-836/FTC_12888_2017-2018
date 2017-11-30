@@ -92,27 +92,6 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         runtime.reset();
         grab();
 
-        moveStraightEncoder(8.0);
-
-        while (opModeIsActive());
-
-        moveStraightEncoder(4.0);
-        sleep(2000);
-        moveStraightEncoder(-2.0);
-        sleep(2000);
-        moveStraightEncoder(4.0);
-
-        while (opModeIsActive());
-
-        compassTurn(90.0);
-        sleep(1000);
-        compassTurn(180.0);
-        sleep(1000);
-        compassTurn(-90.0);
-        sleep(1000);
-        compassTurn(-180.0);
-        sleep(10000);
-
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
