@@ -19,9 +19,11 @@ public class Relic_Recovery_Teleop extends OpMode
     private final double INTAKE_CLOSE_POSITION = 0.65;
     private final double INTAKE_OPEN_POSITION = 0.10;
     private final double INTAKE_OPEN_SLIGHTLY_POSITION = 0.50;
+    private final double SLOWMODE_VALUE = 0.25;
     private boolean hasCube = true;
     private boolean slowMode = false;
     private boolean bButtonEnabled = true;
+    private final boolean IN_COMPETITION = true;
 
     @Override
     public void init() {
@@ -88,8 +90,8 @@ public class Relic_Recovery_Teleop extends OpMode
 
         if(slowMode)
         {
-            forward_power *= 0.5;
-            turn_power *= 0.5;
+            forward_power *= SLOWMODE_VALUE;
+            turn_power *= SLOWMODE_VALUE;
         }
 
         //telemetry.addData("Joystick Values","Forward: %.2f, Turn: %.2f", forward_power, turn_power);
@@ -141,9 +143,17 @@ public class Relic_Recovery_Teleop extends OpMode
             while (gamepad1.a);
         }
 
-        telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
-        telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
-        telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
+        if (IN_COMPETITION == false) {
+            telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
+            telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
+            telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
+        }
+        if (slowMode) {
+            telemetry.addData("Mode","Slow");
+        }
+        else {
+            telemetry.addData("Mode", "Fast");
+        }
         telemetry.update();
     }
 
