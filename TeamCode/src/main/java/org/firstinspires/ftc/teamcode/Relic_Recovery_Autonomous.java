@@ -195,7 +195,7 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     private RelicRecoveryVuMark getPictographKey(){
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        while (vuMark == RelicRecoveryVuMark.UNKNOWN)
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && opModeIsActive())
         {
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
