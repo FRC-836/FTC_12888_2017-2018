@@ -19,6 +19,8 @@ public class Relic_Recovery_Teleop extends OpMode
     private final double INTAKE_CLOSE_POSITION = 0.65;
     private final double INTAKE_OPEN_POSITION = 0.10;
     private boolean hasCube = true;
+    private boolean slowMode = false;
+    private boolean bButtonEnabled = true;
 
     @Override
     public void init() {
@@ -75,10 +77,25 @@ public class Relic_Recovery_Teleop extends OpMode
             turn_power = 0.0;
         }
 
+        if (gamepad1.b && bButtonEnabled)
+        {
+            slowMode = !slowMode;
+            bButtonEnabled = false;
+        }
+        if(!gamepad1.b)
+            bButtonEnabled = true;
+
+        if(slowMode)
+        {
+            forward_power *= 0.5;
+            turn_power *= 0.5;
+        }
+
         //telemetry.addData("Joystick Values","Forward: %.2f, Turn: %.2f", forward_power, turn_power);
 
         double left_power = forward_power + turn_power;
         double right_power = forward_power - turn_power;
+
         //telemetry.addData("Motor Values","Left: %.2f, Right: %.2f", left_power, right_power);
 
         setDrive(left_power, right_power);
