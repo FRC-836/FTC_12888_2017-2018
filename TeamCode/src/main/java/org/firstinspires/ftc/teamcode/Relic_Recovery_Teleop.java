@@ -18,6 +18,7 @@ public class Relic_Recovery_Teleop extends OpMode
     private final double JOYSTICK_DEADZONE = 0.05;
     private final double INTAKE_CLOSE_POSITION = 0.65;
     private final double INTAKE_OPEN_POSITION = 0.10;
+    private final double INTAKE_OPEN_SLIGHTLY_POSITION = 0.50;
     private boolean hasCube = true;
 
     @Override
@@ -116,6 +117,13 @@ public class Relic_Recovery_Teleop extends OpMode
             drop();
         }
 
+        if(gamepad1.a){
+            release();
+            setDrive(-0.2,-0.2);
+            lift(0.2);
+            while (gamepad1.a);
+        }
+
         telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
         telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
         telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
@@ -142,6 +150,11 @@ public class Relic_Recovery_Teleop extends OpMode
 
     private void drop(){
         setIntake(INTAKE_OPEN_POSITION);
+        hasCube = false;
+    }
+
+    private void release(){
+        setIntake(INTAKE_OPEN_SLIGHTLY_POSITION);
         hasCube = false;
     }
 
