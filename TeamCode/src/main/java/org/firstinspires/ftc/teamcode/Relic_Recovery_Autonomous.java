@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -25,6 +26,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="Relic_Recovery_Auto", group="Competition")
 public class Relic_Recovery_Autonomous extends LinearOpMode {
 
+    //Vuforia variables
+    public static final String TAG = "Vuforia VuMark Sample";
+    OpenGLMatrix lastLocation = null;
+    int cameraMonitorViewId;
+    VuforiaLocalizer.Parameters vParameters;
+    VuforiaTrackables relicTrackables;
+    private RelicRecoveryVuMark cryptoboxKey = null;
+    private VuforiaTrackable relicTemplate = null;
+    VuforiaLocalizer vuforia;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
@@ -33,8 +44,6 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private Servo leftIntake = null;
     private Servo rightIntake = null;
 
-    private RelicRecoveryVuMark cryptoboxKey = null;
-    private VuforiaTrackable relicTemplate = null;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     private final double DRIVE_EN_COUNT_PER_FT = 341.1;
@@ -48,7 +57,6 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     BNO055IMU imu;
     Orientation angles;
-    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() {
@@ -78,19 +86,23 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
         setIntake(INTAKE_OPEN_FULLY);
 
         setupVuMarkData();
         setupIMU();
 
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        relicTrackables.activate();
         runtime.reset();
         grab();
+
+        telemetry.addData("Status","Started");
+        telemetry.update();
 
         // Read the pictograph
         cryptoboxKey = getPictographKey();
@@ -100,13 +112,20 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         switch(cryptoboxKey)
         {
             case LEFT:
+                telemetry.addLine("Left Column");
+                telemetry.update();
                 moveStraightEncoder(3.625);
                 break;
             case CENTER:
+                telemetry.addLine("Center Column");
+                telemetry.update();
                 moveStraightEncoder(3.0);
                 break;
-            case RIGHT:
             default:
+                telemetry.addLine("Saw nothing");
+            case RIGHT:
+                telemetry.addLine("Right Column");
+                telemetry.update();
                 moveStraightEncoder(2.375);
                 break;
         }
@@ -195,10 +214,15 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     private RelicRecoveryVuMark getPictographKey(){
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        telemetry.addData("Status","Searching for Pictograph");
+        telemetry.update();
         while (vuMark == RelicRecoveryVuMark.UNKNOWN && opModeIsActive())
         {
+
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
+        telemetry.addData("Status","Pictograph Found");
+        telemetry.update();
         return vuMark;
     }
 
@@ -255,14 +279,14 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     private void setupVuMarkData()
     {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        vParameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        parameters.vuforiaLicenseKey = "ATR3/Cb/////AAAAGTVIvIjz0kb9u+DtnsWzGj0JigqZYbgQE+XMNBbu/++4Xnjd7/uUpFGFKVr/yZ7lnRorZBA+mpukXprPG9dDy22DQIPjId5gCDNTGs1faBtAwVnoDm8qXxeCgIoRXh7aXbQBCVdy9xusOMwgnJwn2lsINNC7dHUF4Z+azbhfjIjoZoNUsLqUBfnXoO7+Emfu62Nlnl6DQhsKLRcjCE551beyEi2Co6RLn2+so7oCY3Favuwpm4H5+f1TPMBW2fhBJH9g4nEKziL90BTu+jLjA/Pt8LIOa3OQaLy7A8gmf8GLnNFvpYQSSOuE+JCMi55Ebv8POx1MmH20HkklMkpWIdmfM/gKfnDKShnG3bJ7oOg+";
+        vParameters.vuforiaLicenseKey = "ATR3/Cb/////AAAAGTVIvIjz0kb9u+DtnsWzGj0JigqZYbgQE+XMNBbu/++4Xnjd7/uUpFGFKVr/yZ7lnRorZBA+mpukXprPG9dDy22DQIPjId5gCDNTGs1faBtAwVnoDm8qXxeCgIoRXh7aXbQBCVdy9xusOMwgnJwn2lsINNC7dHUF4Z+azbhfjIjoZoNUsLqUBfnXoO7+Emfu62Nlnl6DQhsKLRcjCE551beyEi2Co6RLn2+so7oCY3Favuwpm4H5+f1TPMBW2fhBJH9g4nEKziL90BTu+jLjA/Pt8LIOa3OQaLy7A8gmf8GLnNFvpYQSSOuE+JCMi55Ebv8POx1MmH20HkklMkpWIdmfM/gKfnDKShnG3bJ7oOg+";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark"); // TODO: May be missing a file
+        vParameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(vParameters);
+        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
     }
 
