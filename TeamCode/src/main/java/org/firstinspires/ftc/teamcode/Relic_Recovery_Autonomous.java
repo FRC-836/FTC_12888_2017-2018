@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -50,10 +46,12 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     private final double INTAKE_CLOSE_POSITION = 0.65;
     private final double INTAKE_OPEN_POSITION = 0.10;
     private final double INTAKE_OPEN_FULLY = 0.0;
-    private final double ENCODER_DRIVE_POWER = 0.3;
+    private final double ENCODER_DRIVE_POWER = 0.25;
+    private final double COMPASS_TURN_POWER = 0.5;
     // COMPASS_PAUSE_TIME - When using compassTurn, it waits COMPASS_PAUSE_TIME milliseconds before
     // using the compass to ensure the robot has begun moving.
     private final long COMPASS_PAUSE_TIME = 200;
+    private final boolean USE_LEFT_ENCODER = true; // False means use right encoder
 
     BNO055IMU imu;
     Orientation angles;
@@ -73,7 +71,7 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         rightIntake = hardwareMap.get(Servo.class, "intakeLeft");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        // Most robots need the motor on one side to be reversed to drive forward
+        // Most robots need the motor on one side to be reversed to drive moveStraightTime
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -100,9 +98,14 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         relicTrackables.activate();
         runtime.reset();
         grab();
+        sleep(1000);
 
         telemetry.addData("Status","Started");
         telemetry.update();
+
+        lift(0.8);
+        sleep(300);
+        lift(0.2);
 
         // Read the pictograph
         cryptoboxKey = getPictographKey();
@@ -114,32 +117,33 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
             case LEFT:
                 telemetry.addLine("Left Column");
                 telemetry.update();
-                moveStraightEncoder(3.625);
+                moveStraightEncoder(3.625, 3.0);
                 break;
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
-                moveStraightEncoder(3.0);
+                moveStraightEncoder(3.0, 2.5);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
-                moveStraightEncoder(2.375);
+                moveStraightEncoder(2.375, 2.0);
                 break;
         }
+        sleep(1000);
 
-        compassTurn(90);
-        
-        forward(0.3,1000);
+        compassTurn(120);
+        sleep(1000);
+
+        lift(-0.1);
+        moveStraightTime(0.3,1000);
+        lift(0.0);
 
         drop();
 
-        forward(-0.3, 1000);
-
-        compassTurn(180);
-
+        moveStraightTime(-0.3, 500);
 
         telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
         telemetry.update();
@@ -150,44 +154,41 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
     //moveStraightEncoder
     //compassTurn
 
-    private void forward(double power, long time) {
+    private void moveStraightTime(double power, long time) {
         setDrive(power, power);
         sleep(time);
         setDrive(0.0, 0.0);
     }
 
-    /*private void moveStraightEncoder(double dist_feet){
-        int left_end_pos = leftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
-        int right_end_pos = rightDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
-
-        leftDrive.setTargetPosition(left_end_pos);
-        rightDrive.setTargetPosition(right_end_pos);
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        setDrive(ENCODER_DRIVE_POWER, ENCODER_DRIVE_POWER);
-        while (opModeIsActive() && leftDrive.isBusy() && rightDrive.isBusy())
-        {
-            telemetry.addData("Left has moved","%.2f",((double)(left_end_pos - leftDrive.getCurrentPosition()))/DRIVE_EN_COUNT_PER_FT);
-            telemetry.addData("Right has moved","%.2f",((double)(right_end_pos - rightDrive.getCurrentPosition()))/DRIVE_EN_COUNT_PER_FT);
-            telemetry.update();
-        }
-        setDrive(0.0, 0.0);
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }*/
-
-
-    private void moveStraightEncoder(double dist_feet){
-        int end_pos = leftDrive.getCurrentPosition() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
+    private void moveStraightEncoder(double dist_feet, double maxRuntime_seconds){
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        int end_pos = getDriveEncoder() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
         if (dist_feet > 0.0) {
             setDrive(ENCODER_DRIVE_POWER, ENCODER_DRIVE_POWER);
-            while (leftDrive.getCurrentPosition() < end_pos && opModeIsActive());
+            while ((getDriveEncoder() < end_pos) && (runtime.seconds() < maxRuntime_seconds) && opModeIsActive()) {
+                telemetry.addData("Goal / End Position","%d", end_pos);
+                telemetry.addData("Current Position","%d", getDriveEncoder());
+                telemetry.update();
+            }
         }
         else
         {
             setDrive(-ENCODER_DRIVE_POWER, -ENCODER_DRIVE_POWER);
-            while (leftDrive.getCurrentPosition() > end_pos && opModeIsActive());
+            while ((getDriveEncoder() > end_pos) && (runtime.seconds() < maxRuntime_seconds) && opModeIsActive()) {
+                telemetry.addData("Goal / End Position","%d", end_pos);
+                telemetry.addData("Current Position","%d", getDriveEncoder());
+                telemetry.update();
+            }
         }
         setDrive(0.0, 0.0);
+    }
+
+    private int getDriveEncoder() {
+        if (USE_LEFT_ENCODER)
+            return leftDrive.getCurrentPosition();
+        else
+            return rightDrive.getCurrentPosition();
     }
 
     private void setDrive(double left_power, double right_power) {
@@ -228,12 +229,13 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
     private void compassTurn(double degrees) {
         float startPos = getCurrentDegrees();
-        float goalAngle = startPos - ((float) degrees);
-        double drivePower = 0.5;
+        float goalAngle;
         if (degrees < 0.0)
         {
+            degrees += 10.0;
+            goalAngle = startPos - ((float) degrees);
             // Turning left
-            setDrive(-drivePower, drivePower);
+            setDrive(-COMPASS_TURN_POWER, COMPASS_TURN_POWER);
             if (goalAngle > 175.0) {
                 goalAngle -= 360.0;
                 sleep(COMPASS_PAUSE_TIME);
@@ -251,8 +253,10 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         }
         else
         {
+            degrees -= 10.0;
+            goalAngle = startPos - ((float) degrees);
             // Turning right
-            setDrive(drivePower, -drivePower);
+            setDrive(COMPASS_TURN_POWER, -COMPASS_TURN_POWER);
             if (goalAngle < -175.0) {
                 goalAngle += 360.0;
                 sleep(COMPASS_PAUSE_TIME);

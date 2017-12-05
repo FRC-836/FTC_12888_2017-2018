@@ -62,7 +62,6 @@ public class Relic_Recovery_Teleop extends OpMode
 
     @Override
     public void start() {
-        grab();
     }
 
     @Override
@@ -108,9 +107,9 @@ public class Relic_Recovery_Teleop extends OpMode
         if (gamepad1.left_bumper){
             // Lift Arm
             if (hasCube)
-                lift_power = 0.9;
+                lift_power = 0.8;
             else
-                lift_power = 0.7;
+                lift_power = 0.6;
         }
         else if(gamepad1.left_trigger > 0.5f){
             // Lower Arm
