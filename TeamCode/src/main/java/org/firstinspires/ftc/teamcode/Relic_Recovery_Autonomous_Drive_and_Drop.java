@@ -19,8 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="Relic_Recovery_Auto", group="Competition")
-public class Relic_Recovery_Autonomous extends LinearOpMode {
+@Autonomous(name="Drive and Drop", group="Competition")
+public class Relic_Recovery_Autonomous_Drive_and_Drop extends LinearOpMode {
 
     //Vuforia variables
     public static final String TAG = "Vuforia VuMark Sample";
@@ -95,8 +95,6 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        relicTrackables.activate();
-        runtime.reset();
         grab();
         sleep(1000);
 
@@ -107,34 +105,8 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         sleep(300);
         lift(0.2);
 
-        // Read the pictograph
-        cryptoboxKey = getPictographKey();
-
-        // Drive straight to cryptobox area
-        // 3 +- 0.625 ft
-        switch(cryptoboxKey)
-        {
-            case LEFT:
-                telemetry.addLine("Left Column");
-                telemetry.update();
-                moveStraightEncoder(3.625, 3.0);
-                break;
-            case CENTER:
-                telemetry.addLine("Center Column");
-                telemetry.update();
-                moveStraightEncoder(3.0, 2.5);
-                break;
-            default:
-                telemetry.addLine("Saw nothing");
-            case RIGHT:
-                telemetry.addLine("Right Column");
-                telemetry.update();
-                moveStraightEncoder(2.375, 2.0);
-                break;
-        }
         sleep(1000);
-
-        compassTurn(120);
+        moveStraightTime(0.5,1500);
         sleep(1000);
 
         lift(-0.1);
@@ -144,10 +116,6 @@ public class Relic_Recovery_Autonomous extends LinearOpMode {
         drop();
 
         moveStraightTime(-0.3, 500);
-
-        telemetry.addData("Total runtime","%.2f seconds",runtime.seconds());
-        telemetry.update();
-        while(opModeIsActive());
     }
 
     //TO TEST:
