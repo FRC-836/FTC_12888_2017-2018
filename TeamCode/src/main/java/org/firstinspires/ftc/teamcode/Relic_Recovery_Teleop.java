@@ -6,66 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Relic_Recovery_Teleop", group="Competition")
-public class Relic_Recovery_Teleop extends OpMode
+public class Relic_Recovery_Teleop extends Teleop_Parent
 {
-    // Declare OpMode members.
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor arm = null;
-    private Servo leftIntake = null;
-    private Servo rightIntake = null;
-
-    private final double JOYSTICK_DEADZONE = 0.05;
-    private final double INTAKE_CLOSE_POSITION = 0.65;
-    private final double INTAKE_OPEN_POSITION = 0.10;
-    private final double INTAKE_OPEN_SLIGHTLY_POSITION = 0.50;
-    private final double SLOWMODE_VALUE = 0.25;
-    private boolean hasCube = true;
-    private boolean slowMode = false;
-    private boolean bButtonEnabled = true;
-    private final boolean IN_COMPETITION = true;
-
     @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive = hardwareMap.get(DcMotor.class, "leftdrive");
-        rightDrive = hardwareMap.get(DcMotor.class, "rightdrive");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        leftIntake = hardwareMap.get(Servo.class, "intakeRight");
-        rightIntake = hardwareMap.get(Servo.class, "intakeLeft");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        arm.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(Servo.Direction.FORWARD);
-        leftIntake.setDirection(Servo.Direction.REVERSE);
-
-        // set the zero power behavior of the motors
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-    }
-
-    @Override
-    public void init_loop() {
-    }
-
-    @Override
-    public void start() {
-    }
-
-    @Override
-    public void loop() {
+    public void cycleTeleop() {
 
         // Set drive motors
         double forward_power = -gamepad1.left_stick_y;
@@ -154,38 +98,5 @@ public class Relic_Recovery_Teleop extends OpMode
             telemetry.addData("Mode", "Fast");
         }
         telemetry.update();
-    }
-
-    @Override
-    public void stop() {
-    }
-
-    private void setDrive(double left_power, double right_power) {
-        leftDrive.setPower(left_power);
-        rightDrive.setPower(right_power);
-    }
-
-    private void lift(double arm_power){
-        arm.setPower(arm_power);
-    }
-
-    private void grab(){
-        setIntake(INTAKE_CLOSE_POSITION);
-        hasCube = true;
-    }
-
-    private void drop(){
-        setIntake(INTAKE_OPEN_POSITION);
-        hasCube = false;
-    }
-
-    private void release(){
-        setIntake(INTAKE_OPEN_SLIGHTLY_POSITION);
-        hasCube = false;
-    }
-
-    private void setIntake(double intake_position){
-        leftIntake.setPosition(intake_position);
-        rightIntake.setPosition(intake_position);
     }
 }
