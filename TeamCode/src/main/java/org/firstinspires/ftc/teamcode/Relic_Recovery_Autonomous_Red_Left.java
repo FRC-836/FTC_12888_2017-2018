@@ -65,15 +65,6 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
         }
         sleep(1000);
 
-        //compassTurn(120);
-        sleep(1000);
-
-        lift(-0.1);
-        moveStraightTime(0.3,1000);
-        lift(0.0);
-
-        drop();
-
-        moveStraightTime(-0.3, 500);
+        
     }
 }

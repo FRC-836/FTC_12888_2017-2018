@@ -23,8 +23,8 @@ public abstract class Robot_Parent extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     protected DcMotor backLeftDrive = null;
     protected DcMotor backRightDrive = null;
-//    protected DcMotor frontLeftDrive = null;
-//    protected DcMotor frontRightDrive = null;
+    protected DcMotor frontLeftDrive = null;
+    protected DcMotor frontRightDrive = null;
     protected DcMotor arm = null;
     protected Servo leftIntake = null;
     protected Servo rightIntake = null;
@@ -40,8 +40,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         backLeftDrive = hardwareMap.get(DcMotor.class, "BLD");
         backRightDrive = hardwareMap.get(DcMotor.class, "BRD");
-//        frontLeftDrive = hardwareMap.get(DcMotor.class, "FLD");
-//        frontRightDrive = hardwareMap.get(DcMotor.class, "FRD");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "FLD");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "FRD");
         arm = hardwareMap.get(DcMotor.class, "arm");
         leftIntake = hardwareMap.get(Servo.class, "intakeRight");
         rightIntake = hardwareMap.get(Servo.class, "intakeLeft");
@@ -50,8 +50,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
-//        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-//        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         arm.setDirection(DcMotor.Direction.REVERSE);
         rightIntake.setDirection(Servo.Direction.FORWARD);
         leftIntake.setDirection(Servo.Direction.REVERSE);
@@ -60,8 +60,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightDrive .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        frontRightDrive .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive .setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -89,8 +89,7 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected void setDrive(double left_power, double right_power) {
         backLeftDrive.setPower(left_power);
         backRightDrive.setPower(right_power);
-//        frontLeftDrive.setPower(left_power);
-//        frontRightDrive.setPower(right_power);
+
     }
 
     protected void lift(double arm_power){
