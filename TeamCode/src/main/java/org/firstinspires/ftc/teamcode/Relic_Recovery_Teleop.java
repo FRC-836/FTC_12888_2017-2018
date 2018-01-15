@@ -89,7 +89,7 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
             stopIntake();
         }
 
-        if (IN_COMPETITION == false) {
+        if (!IN_COMPETITION) {
             telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
             telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
             //telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
