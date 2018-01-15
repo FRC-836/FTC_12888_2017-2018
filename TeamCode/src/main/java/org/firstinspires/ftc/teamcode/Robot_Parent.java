@@ -27,7 +27,7 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected DcMotor frontRightDrive = null;
     protected DcMotor arm = null;
     protected Servo leftIntake = null;
-    protected Servo rightIntake = null;
+    //protected Servo rightIntake = null;
     protected boolean hasCube = false;
 
     protected final double INTAKE_CLOSE_POSITION = 0.65;
@@ -43,8 +43,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FLD");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FRD");
         arm = hardwareMap.get(DcMotor.class, "arm");
-        leftIntake = hardwareMap.get(Servo.class, "intakeRight");
-        rightIntake = hardwareMap.get(Servo.class, "intakeLeft");
+        leftIntake = hardwareMap.get(Servo.class, "intakeLeft");
+        //rightIntake = hardwareMap.get(Servo.class, "intakeRight");
 
         // Most robots need the motor on one side to be reversed to drive moveStraightTime
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -53,8 +53,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         arm.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(Servo.Direction.FORWARD);
         leftIntake.setDirection(Servo.Direction.REVERSE);
+        //rightIntake.setDirection(Servo.Direction.FORWARD);
 
         // Set stopping behavior
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -89,7 +89,8 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected void setDrive(double left_power, double right_power) {
         backLeftDrive.setPower(left_power);
         backRightDrive.setPower(right_power);
-
+        frontLeftDrive.setPower(left_power);
+        frontRightDrive.setPower(right_power);
     }
 
     protected void lift(double arm_power){
@@ -108,6 +109,6 @@ public abstract class Robot_Parent extends LinearOpMode {
 
     protected void setIntake(double intake_position){
         leftIntake.setPosition(intake_position);
-        rightIntake.setPosition(intake_position);
+        //rightIntake.setPosition(intake_position);
     }
 }

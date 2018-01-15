@@ -45,7 +45,7 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
             case LEFT:
                 telemetry.addLine("Left Column");
                 telemetry.update();
-                //moveStraightEncoder(3.625, 3.0);
+                //moveStraightEncodber(3.625, 3.0);
                 compassTurn(55);
                 break;
             case CENTER:
@@ -64,7 +64,5 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
                 break;
         }
         sleep(1000);
-
-        
     }
 }

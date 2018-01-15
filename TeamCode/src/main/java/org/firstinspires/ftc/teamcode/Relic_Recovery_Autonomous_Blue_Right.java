@@ -34,20 +34,35 @@ public class Relic_Recovery_Autonomous_Blue_Right extends Autonomous_Parent {
         sleep(300);
         lift(0.2);
 
-        moveStraightEncoder(2.385, 2.0);
+        // Read the pictograph
+        cryptoboxKey = getPictographKey();
+
+        moveStraightEncoder(-2.385, 2.0);
         sleep(1000);
 
-        compassTurn(-70);
-
+        switch(cryptoboxKey)
+        {
+            case LEFT:
+                telemetry.addLine("Left Column");
+                telemetry.update();
+                //moveStraightEncoder(3.625, 3.0);
+                compassTurn(55);
+                break;
+            case CENTER:
+                telemetry.addLine("Center Column");
+                telemetry.update();
+                //moveStraightEncoder(3.0, 2.5);
+                compassTurn(70);
+                break;
+            default:
+                telemetry.addLine("Saw nothing");
+            case RIGHT:
+                telemetry.addLine("Right Column");
+                telemetry.update();
+                //moveStraightEncoder(2.375, 2.0);
+                compassTurn(95);
+                break;
+        }
         sleep(1000);
-
-        lift(-0.1);
-        moveStraightTime(0.3,1000);
-        lift(0.0);
-
-        drop();
-
-        moveStraightTime(-0.3, 500);
-
     }
 }

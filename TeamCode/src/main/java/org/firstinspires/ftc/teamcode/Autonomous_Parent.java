@@ -31,7 +31,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private final double DRIVE_EN_COUNT_PER_FT = 341.1;
+    private final double DRIVE_EN_COUNT_PER_FT = 625.7;
     private final double INTAKE_OPEN_FULLY = 0.0;
     private final double ENCODER_DRIVE_POWER = 0.25;
     private final double COMPASS_TURN_POWER = 0.5;
@@ -102,6 +102,8 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     }
 
     protected RelicRecoveryVuMark getPictographKey(){
+        return RelicRecoveryVuMark.CENTER;
+        /*
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         telemetry.addData("Status","Searching for Pictograph");
         telemetry.update();
@@ -113,6 +115,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         telemetry.addData("Status","Pictograph Found");
         telemetry.update();
         return vuMark;
+        */
     }
 
     protected void compassTurn(double degrees) {
