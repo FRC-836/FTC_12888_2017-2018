@@ -28,7 +28,10 @@ public class Teleop_Parent extends Robot_Parent{
     }
 
     protected void release(){
-        setIntake(INTAKE_OPEN_SLIGHTLY_POSITION);
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_RELEASE_POWER);
+        else
+            setIntake(INTAKE_OPEN_SLIGHTLY_POSITION);
         hasCube = false;
     }
 }

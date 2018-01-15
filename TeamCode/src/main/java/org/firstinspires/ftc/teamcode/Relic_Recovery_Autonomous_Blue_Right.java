@@ -26,6 +26,7 @@ public class Relic_Recovery_Autonomous_Blue_Right extends Autonomous_Parent {
     public void runAutonomous() {
         grab();
         sleep(1000);
+        holdCube();
 
         telemetry.addData("Status","Started");
         telemetry.update();
@@ -64,5 +65,15 @@ public class Relic_Recovery_Autonomous_Blue_Right extends Autonomous_Parent {
                 break;
         }
         sleep(1000);
+
+        //CODE BELOW THIS POINT WAS DELETED AND RE-ADDED
+
+        lift(-0.1);
+        moveStraightTime(0.3,1000);
+        lift(0.0);
+
+        drop();
+        moveStraightTime(-0.3, 500);
+        stopIntake();
     }
 }

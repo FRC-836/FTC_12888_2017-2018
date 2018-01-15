@@ -1,21 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 public abstract class Robot_Parent extends LinearOpMode {
 
@@ -26,12 +14,19 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected DcMotor frontLeftDrive = null;
     protected DcMotor frontRightDrive = null;
     protected DcMotor arm = null;
-    protected Servo leftIntake = null;
+    //protected Servo leftIntake = null;
+    protected DcMotor leftIntake = null;
     //protected Servo rightIntake = null;
     protected boolean hasCube = false;
 
     protected final double INTAKE_CLOSE_POSITION = 0.65;
     protected final double INTAKE_OPEN_POSITION = 0.10;
+    protected final double INTAKE_RELEASE_POWER = 0.4;
+    protected final double INTAKE_GRAB_POWER = 1.0;
+    protected final double INTAKE_DROP_POWER = -1.0;
+    protected final double INTAKE_STOPPED = 0.0;
+    protected final double INTAKE_HOLD_POWER = 0.1;
+    protected final boolean INTAKE_OPERATES_BY_POWER = true;
 
     @Override
     public void runOpMode() {
@@ -43,7 +38,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "FLD");
         frontRightDrive = hardwareMap.get(DcMotor.class, "FRD");
         arm = hardwareMap.get(DcMotor.class, "arm");
-        leftIntake = hardwareMap.get(Servo.class, "intakeLeft");
+        //leftIntake = hardwareMap.get(Servo.class, "intakeLeft");
+        leftIntake = hardwareMap.get(DcMotor.class, "intakeLeft");
         //rightIntake = hardwareMap.get(Servo.class, "intakeRight");
 
         // Most robots need the motor on one side to be reversed to drive moveStraightTime
@@ -53,7 +49,8 @@ public abstract class Robot_Parent extends LinearOpMode {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         arm.setDirection(DcMotor.Direction.REVERSE);
-        leftIntake.setDirection(Servo.Direction.REVERSE);
+        //leftIntake.setDirection(Servo.Direction.REVERSE);
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
         //rightIntake.setDirection(Servo.Direction.FORWARD);
 
         // Set stopping behavior
@@ -98,17 +95,34 @@ public abstract class Robot_Parent extends LinearOpMode {
     }
 
     protected void grab(){
-        setIntake(INTAKE_CLOSE_POSITION);
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_GRAB_POWER);
+        else
+            setIntake(INTAKE_CLOSE_POSITION);
         hasCube = true;
     }
 
     protected void drop(){
-        setIntake(INTAKE_OPEN_POSITION);
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_DROP_POWER);
+        else
+            setIntake(INTAKE_OPEN_POSITION);
         hasCube = false;
     }
 
     protected void setIntake(double intake_position){
-        leftIntake.setPosition(intake_position);
+        //leftIntake.setPosition(intake_position);
+        leftIntake.setPower(intake_position);
         //rightIntake.setPosition(intake_position);
+    }
+
+    protected void stopIntake(){
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_STOPPED);
+    }
+
+    protected void holdCube(){
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_HOLD_POWER);
     }
 }

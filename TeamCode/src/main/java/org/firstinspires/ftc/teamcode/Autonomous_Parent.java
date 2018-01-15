@@ -2,14 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -47,7 +42,10 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     public void initializeRobot() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        setIntake(INTAKE_OPEN_FULLY);
+        if (INTAKE_OPERATES_BY_POWER)
+            setIntake(INTAKE_RELEASE_POWER);
+        else
+            setIntake(INTAKE_OPEN_FULLY);
 
         setupVuMarkData();
         setupIMU();

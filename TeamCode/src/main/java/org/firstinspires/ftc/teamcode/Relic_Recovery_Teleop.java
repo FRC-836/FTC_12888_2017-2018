@@ -78,18 +78,21 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
         else if (gamepad1.right_trigger > 0.5f){
             drop();
         }
-
-        if(gamepad1.a){
+        else if(gamepad1.a){
             release();
             setDrive(-0.2,-0.2);
             lift(0.2);
             while (gamepad1.a);
         }
+        else
+        {
+            stopIntake();
+        }
 
         if (IN_COMPETITION == false) {
             telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
             telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
-            telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
+            //telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
         }
         if (slowMode) {
             telemetry.addData("Mode","Slow");
