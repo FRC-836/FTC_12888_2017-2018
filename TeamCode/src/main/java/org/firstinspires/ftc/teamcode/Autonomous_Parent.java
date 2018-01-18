@@ -42,8 +42,11 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     public void initializeRobot() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        if (INTAKE_OPERATES_BY_POWER)
+        if (INTAKE_OPERATES_BY_POWER) {
             setIntake(INTAKE_RELEASE_POWER);
+            sleep(500);
+            setIntake(-INTAKE_HOLD_POWER);
+        }
         else
             setIntake(INTAKE_OPEN_FULLY);
 
@@ -54,6 +57,10 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     @Override
     public void runRobot() {
         relicTrackables.activate();
+        if (INTAKE_OPERATES_BY_POWER)
+            stopIntake();
+        else
+            setIntake(INTAKE_OPEN_POSITION);
 
         runAutonomous();
     }

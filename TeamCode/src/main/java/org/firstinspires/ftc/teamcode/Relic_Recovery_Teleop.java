@@ -86,7 +86,10 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
         }
         else
         {
-            stopIntake();
+            if (hasCube)
+                holdCube();
+            else
+                stopIntake();
         }
 
         if (!IN_COMPETITION) {

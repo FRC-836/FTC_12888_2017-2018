@@ -21,11 +21,13 @@ public abstract class Robot_Parent extends LinearOpMode {
 
     protected final double INTAKE_CLOSE_POSITION = 0.65;
     protected final double INTAKE_OPEN_POSITION = 0.10;
-    protected final double INTAKE_RELEASE_POWER = -0.2;
-    protected final double INTAKE_GRAB_POWER = 1.0;
-    protected final double INTAKE_DROP_POWER = -1.0;
+
+    protected final double INTAKE_RELEASE_POWER = -0.05;
+    protected final double INTAKE_GRAB_POWER = 0.25;
+    protected final double INTAKE_DROP_POWER = -0.25;
     protected final double INTAKE_STOPPED = 0.0;
-    protected final double INTAKE_HOLD_POWER = 0.1;
+    protected final double INTAKE_HOLD_POWER = 0.05;
+
     protected final boolean INTAKE_OPERATES_BY_POWER = true;
 
     @Override

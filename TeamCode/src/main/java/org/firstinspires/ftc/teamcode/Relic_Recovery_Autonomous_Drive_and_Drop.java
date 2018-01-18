@@ -28,9 +28,6 @@ public class Relic_Recovery_Autonomous_Drive_and_Drop extends Autonomous_Parent 
         sleep(1000);
         holdCube();
 
-        telemetry.addData("Status","Started");
-        telemetry.update();
-
         lift(0.8);
         sleep(300);
         lift(0.2);
@@ -44,7 +41,6 @@ public class Relic_Recovery_Autonomous_Drive_and_Drop extends Autonomous_Parent 
         lift(0.0);
 
         drop();
-
         moveStraightTime(-0.3, 500);
         stopIntake();
     }
