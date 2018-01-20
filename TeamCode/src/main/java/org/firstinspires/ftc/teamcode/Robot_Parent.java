@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class Robot_Parent extends LinearOpMode {
@@ -26,7 +27,7 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected final double INTAKE_GRAB_POWER = 0.25;
     protected final double INTAKE_DROP_POWER = -0.25;
     protected final double INTAKE_STOPPED = 0.0;
-    protected final double INTAKE_HOLD_POWER = 0.05;
+    protected final double INTAKE_HOLD_POWER = 0.15;
 
     protected final boolean INTAKE_OPERATES_BY_POWER = true;
 
@@ -52,7 +53,7 @@ public abstract class Robot_Parent extends LinearOpMode {
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         arm.setDirection(DcMotor.Direction.REVERSE);
         //leftIntake.setDirection(Servo.Direction.REVERSE);
-        leftIntake.setDirection(DcMotor.Direction.REVERSE);
+        leftIntake.setDirection(DcMotor.Direction.FORWARD);
         //rightIntake.setDirection(Servo.Direction.FORWARD);
 
         // Set stopping behavior

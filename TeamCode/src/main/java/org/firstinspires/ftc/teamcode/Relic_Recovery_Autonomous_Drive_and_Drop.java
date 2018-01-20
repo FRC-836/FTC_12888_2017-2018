@@ -43,5 +43,7 @@ public class Relic_Recovery_Autonomous_Drive_and_Drop extends Autonomous_Parent 
         drop();
         moveStraightTime(-0.3, 500);
         stopIntake();
+        sleep(1000);
+        pushCube();
     }
 }

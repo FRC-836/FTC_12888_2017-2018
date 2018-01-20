@@ -26,14 +26,14 @@ public abstract class Autonomous_Parent extends Robot_Parent {
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private final double DRIVE_EN_COUNT_PER_FT = 625.7;
+    private final double DRIVE_EN_COUNT_PER_FT = 1346.8; // 625.7
     private final double INTAKE_OPEN_FULLY = 0.0;
     private final double ENCODER_DRIVE_POWER = 0.25;
     private final double COMPASS_TURN_POWER = 0.5;
     // COMPASS_PAUSE_TIME - When using compassTurn, it waits COMPASS_PAUSE_TIME milliseconds before
     // using the compass to ensure the robot has begun moving.
     private final long COMPASS_PAUSE_TIME = 200;
-    private final boolean USE_LEFT_ENCODER = true; // False means use right encoder
+    private final boolean USE_LEFT_ENCODER = false; // False means use right encoder
 
     BNO055IMU imu;
     Orientation angles;
@@ -107,8 +107,6 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     }
 
     protected RelicRecoveryVuMark getPictographKey(){
-        return RelicRecoveryVuMark.CENTER;
-        /*
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         telemetry.addData("Status","Searching for Pictograph");
         telemetry.update();
@@ -120,7 +118,6 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         telemetry.addData("Status","Pictograph Found");
         telemetry.update();
         return vuMark;
-        */
     }
 
     protected void compassTurn(double degrees) {
@@ -171,6 +168,60 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         setDrive(0.0, 0.0);
     }
 
+    protected void oneWheelCompassTurn(double degrees, boolean isRightWheel) {
+        float startPos = getCurrentDegrees();
+        float goalAngle;
+        if (degrees < 0.0)
+        {
+            degrees += 10.0;
+            goalAngle = startPos - ((float) degrees);
+            // Turning left
+            if (isRightWheel)
+                setDrive(0.0, COMPASS_TURN_POWER);
+            else
+                setDrive(-COMPASS_TURN_POWER, 0.0);
+            if (goalAngle > 175.0) {
+                goalAngle -= 360.0;
+                sleep(COMPASS_PAUSE_TIME);
+                while (getCurrentDegrees() >= startPos && opModeIsActive())
+                {
+                    telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                    telemetry.update();
+                }
+            }
+            while (getCurrentDegrees() < goalAngle && opModeIsActive())
+            {
+                telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                telemetry.update();
+            }
+        }
+        else
+        {
+            degrees -= 10.0;
+            goalAngle = startPos - ((float) degrees);
+            // Turning right
+            if (isRightWheel)
+                setDrive(0.0, -COMPASS_TURN_POWER);
+            else
+                setDrive(COMPASS_TURN_POWER, 0.0);
+            if (goalAngle < -175.0) {
+                goalAngle += 360.0;
+                sleep(COMPASS_PAUSE_TIME);
+                while (getCurrentDegrees() <= startPos && opModeIsActive())
+                {
+                    telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                    telemetry.update();
+                }
+            }
+            while (getCurrentDegrees() > goalAngle && opModeIsActive())
+            {
+                telemetry.addData("Angle1","%.2f",getCurrentDegrees());
+                telemetry.update();
+            }
+        }
+        setDrive(0.0, 0.0);
+    }
+
     private float getCurrentDegrees()
     {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -200,4 +251,14 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
     }
+
+    protected void pushCube() {
+        grab();
+        sleep(500);
+        holdCube();
+        moveStraightTime(0.3, 1000);
+        sleep(1000);
+        moveStraightTime(-0.3, 500);
+    }
 }
+
