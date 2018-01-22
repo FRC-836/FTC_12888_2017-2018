@@ -73,12 +73,15 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
 
         // set intake power
         if (gamepad1.right_bumper){
+            // Pressing intake close button
             grab();
         }
         else if (gamepad1.right_trigger > 0.5f){
+            // Pressing intake open button
             drop();
         }
         else if(gamepad1.a){
+            // Pressing intake release/score button
             release();
             setDrive(-0.2,-0.2);
             lift(0.2);
@@ -86,15 +89,17 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
         }
         else
         {
+            // Not pressing any intake-related buttons
             if (hasCube)
                 holdCube();
             else
-                stopIntake();
+                release();
         }
 
         if (!IN_COMPETITION) {
             telemetry.addData("Forward/Turn", "%.2f - %.2f", forward_power, turn_power);
             telemetry.addData("Arm", "Controller: %.2f | Actual: %.2f", lift_power, arm.getPower());
+            telemetry.addData("Intake","%.2f", leftIntake.getPower());
             //telemetry.addData("Intake", "%.2f", leftIntake.getPosition());
         }
         if (slowMode) {

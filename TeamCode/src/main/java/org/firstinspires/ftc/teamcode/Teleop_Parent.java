@@ -5,10 +5,9 @@ public class Teleop_Parent extends Robot_Parent{
     protected final double JOYSTICK_DEADZONE = 0.05;
     protected final double INTAKE_OPEN_SLIGHTLY_POSITION = 0.50;
     protected final double SLOWMODE_VALUE = 0.25;
-    protected boolean hasCube = true;
     protected boolean slowMode = false;
     protected boolean bButtonEnabled = true;
-    protected final boolean IN_COMPETITION = true;
+    protected final boolean IN_COMPETITION = false;
 
     @Override
     public void initializeRobot(){

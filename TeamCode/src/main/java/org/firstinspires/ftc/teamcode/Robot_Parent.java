@@ -127,5 +127,6 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected void holdCube(){
         if (INTAKE_OPERATES_BY_POWER)
             setIntake(INTAKE_HOLD_POWER);
+        hasCube = true;
     }
 }
