@@ -34,6 +34,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     // using the compass to ensure the robot has begun moving.
     private final long COMPASS_PAUSE_TIME = 200;
     private final boolean USE_LEFT_ENCODER = false; // False means use right encoder
+    private final double PICTOGRAPH_SEARCH_TIME = 5.0;
 
     BNO055IMU imu;
     Orientation angles;
@@ -110,9 +111,10 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         telemetry.addData("Status","Searching for Pictograph");
         telemetry.update();
-        while (vuMark == RelicRecoveryVuMark.UNKNOWN && opModeIsActive())
+        ElapsedTime pictographTime = new ElapsedTime();
+        pictographTime.reset();
+        while (vuMark == RelicRecoveryVuMark.UNKNOWN && opModeIsActive() && (pictographTime.seconds() < PICTOGRAPH_SEARCH_TIME))
         {
-
             vuMark = RelicRecoveryVuMark.from(relicTemplate);
         }
         telemetry.addData("Status","Pictograph Found");
@@ -256,7 +258,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         grab();
         sleep(500);
         holdCube();
-        moveStraightTime(0.3, 1000);
+        moveStraightTime(0.15, 1000);
         sleep(1000);
         moveStraightTime(-0.3, 500);
     }

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 @Autonomous(name="Blue Left", group="Competition")
 public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
 
@@ -23,9 +25,9 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
 
         moveStraightEncoder(-2.0, 4.0);
         sleep(1000);
-        compassTurn(-55.0);
+        compassTurn(-60.0);
         sleep(1000);
-        moveStraightEncoder(1.5, 2.0);
+        moveStraightEncoder(1.95, 4.0);
         sleep(1000);
         switch(cryptoboxKey)
         {
@@ -33,12 +35,12 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
                 telemetry.addLine("Left Column");
                 telemetry.update();
                 compassTurn(-170.0);
-                moveStraightEncoder(1.15, 3.0);
+                moveStraightEncoder(0.95, 3.0);
                 break;
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
-                compassTurn(-145.0);
+                compassTurn(-160.0);
                 moveStraightEncoder(0.75, 3.0);
                 break;
             default:
@@ -46,7 +48,7 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
-                compassTurn(-120.0);
+                compassTurn(-150.0);
                 moveStraightEncoder(0.50, 3.0);
                 break;
         }
@@ -64,5 +66,10 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
         stopIntake();
         sleep(1000);
         pushCube();
+
+        if (cryptoboxKey== RelicRecoveryVuMark.RIGHT) {
+            oneWheelCompassTurn(-50.0, false);
+            moveStraightTime(0.3, 1000);
+        }
     }
 }

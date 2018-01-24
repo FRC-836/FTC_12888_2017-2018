@@ -49,14 +49,14 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
                 //moveStraightEncodber(3.625, 3.0);
                 oneWheelCompassTurn(55, true);
                 break;
+            default:
+                telemetry.addLine("Saw nothing");
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
                 //moveStraightEncoder(3.0, 2.5);
                 oneWheelCompassTurn(70, true);
                 break;
-            default:
-                telemetry.addLine("Saw nothing");
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
