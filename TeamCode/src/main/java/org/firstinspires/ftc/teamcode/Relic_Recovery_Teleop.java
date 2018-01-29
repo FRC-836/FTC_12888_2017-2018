@@ -51,7 +51,7 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
         if (gamepad1.left_bumper){
             // Lift Arm
             if (hasCube)
-                lift_power = 0.8;
+                lift_power = 0.9;
             else
                 lift_power = 0.6;
         }
@@ -82,8 +82,9 @@ public class Relic_Recovery_Teleop extends Teleop_Parent
         }
         else if(gamepad1.a){
             // Pressing intake release/score button
-            release();
-            setDrive(-0.2,-0.2);
+            drop();
+            sleep(250);
+            setDrive(-0.3,-0.2);
             lift(0.2);
             while (gamepad1.a);
         }
