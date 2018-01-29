@@ -46,7 +46,7 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
                 moveStraightEncoder(2.00, 4.0);
                 holdCube();
                 sleep(1000);
-                oneWheelCompassTurn(-15.0, true);
+                oneWheelCompassTurn(-20.0, true);
                 break;
         }
         sleep(1000);

@@ -40,7 +40,7 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
-                compassTurn(-160.0);
+                compassTurn(-162.0);
                 moveStraightEncoder(0.75, 3.0);
                 break;
             default:
