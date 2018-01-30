@@ -8,9 +8,10 @@ public class Encoder_Calibration extends Autonomous_Parent {
     @Override
     public void runAutonomous() {
         int start = backLeftDrive.getCurrentPosition();
-        moveStraightEncoder(10.0, 7500);
+        moveStraightTime(ENCODER_DRIVE_POWER, 3000);
         sleep(1000);
         telemetry.addData("End Displacement","%d",backLeftDrive.getCurrentPosition() - start);
         telemetry.update();
+        sleep(10000);
     }
 }

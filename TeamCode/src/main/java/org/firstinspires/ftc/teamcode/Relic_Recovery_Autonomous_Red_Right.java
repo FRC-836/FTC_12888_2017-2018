@@ -25,7 +25,7 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
             case LEFT:
                 telemetry.addLine("Left Column");
                 telemetry.update();
-                moveStraightEncoder(2.00, 4.0);
+                moveStraightEncoder(1.95, 4.0);
                 holdCube();
                 sleep(1000);
                 compassTurn(-45.0);
@@ -33,20 +33,20 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
-                moveStraightEncoder(2.00, 4.0);
+                moveStraightEncoder(1.95, 4.0);
                 holdCube();
                 sleep(1000);
-                compassTurn(-32.0);
+                compassTurn(-35.0);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
-                moveStraightEncoder(2.00, 4.0);
+                moveStraightEncoder(1.95, 4.0);
                 holdCube();
                 sleep(1000);
-                oneWheelCompassTurn(-20.0, true);
+                oneWheelCompassTurn(-25.0, true);
                 break;
         }
         sleep(1000);

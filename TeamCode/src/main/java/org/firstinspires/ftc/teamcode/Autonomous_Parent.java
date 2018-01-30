@@ -26,14 +26,14 @@ public abstract class Autonomous_Parent extends Robot_Parent {
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private final double DRIVE_EN_COUNT_PER_FT = 1346.8; // 625.7
+    private final double DRIVE_EN_COUNT_PER_FT = 951.9; // 625.7
     private final double INTAKE_OPEN_FULLY = 0.0;
-    private final double ENCODER_DRIVE_POWER = 0.25;
+    protected final double ENCODER_DRIVE_POWER = 0.25;
     private final double COMPASS_TURN_POWER = 0.5;
     // COMPASS_PAUSE_TIME - When using compassTurn, it waits COMPASS_PAUSE_TIME milliseconds before
     // using the compass to ensure the robot has begun moving.
     private final long COMPASS_PAUSE_TIME = 200;
-    private final boolean USE_LEFT_ENCODER = false; // False means use right encoder
+    private final boolean USE_LEFT_ENCODER = true; // False means use right encoder
     private final double PICTOGRAPH_SEARCH_TIME = 5.0;
 
     BNO055IMU imu;
