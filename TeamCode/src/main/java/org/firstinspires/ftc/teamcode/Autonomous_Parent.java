@@ -25,7 +25,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     private VuforiaLocalizer vuforia;
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-    
+
     private final double DRIVE_EN_COUNT_PER_FT = 951.9;
     private final double INTAKE_OPEN_FULLY = 0.0;
     protected final double ENCODER_DRIVE_POWER = 0.25;
@@ -39,15 +39,22 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     BNO055IMU imu;
     Orientation angles;
 
+    enum Color {
+        RED,
+        BLUE,
+        UNKNOWN
+    }
+
     @Override
     public void initializeRobot() {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        if (INTAKE_OPERATES_BY_POWER) {
+        if (INTAKE_OPERATES_BY_POWER)
             setIntake(INTAKE_DROP_POWER);
-        }
         else
             setIntake(INTAKE_OPEN_FULLY);
+
+        raiseJewelArm();
 
         setupVuMarkData();
         setupIMU();
@@ -259,6 +266,32 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         moveStraightTime(0.15, 1000);
         sleep(1000);
         moveStraightTime(-0.3, 500);
+    }
+
+    private Color getJewelColor() {
+        return Color.UNKNOWN;
+    }
+
+    protected void hitJewel(boolean knockBlueJewel){
+        lowerJewelArm();
+        sleep(1500);
+        Color jewelColor = getJewelColor();
+        double DRIVE_DISTANCE = 2.0/12.0;
+        if ((jewelColor == Color.BLUE && knockBlueJewel) || (jewelColor == Color.RED && !knockBlueJewel))
+        {
+            // Drive Forwards
+            moveStraightEncoder(DRIVE_DISTANCE, 1.0);
+            sleep(500);
+            moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
+        }
+        else if ((jewelColor == Color.BLUE && !knockBlueJewel) || (jewelColor == Color.RED && knockBlueJewel))
+        {
+            // Drive Backwards
+            moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
+            sleep(500);
+            moveStraightEncoder(DRIVE_DISTANCE, 1.0);
+        }
+        raiseJewelArm();
     }
 }
 

@@ -20,6 +20,8 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
+        hitJewel(true);
+
         switch(cryptoboxKey)
         {
             case LEFT:

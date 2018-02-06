@@ -38,6 +38,8 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
+        hitJewel(true);
+
         moveStraightEncoder(3.45, 4.0);
         sleep(1000);
 

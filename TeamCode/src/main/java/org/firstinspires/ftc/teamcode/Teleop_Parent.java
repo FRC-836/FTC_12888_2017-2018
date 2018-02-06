@@ -16,6 +16,7 @@ public class Teleop_Parent extends Robot_Parent{
 
     @Override
     public void runRobot(){
+        raiseJewelArm();
         while (opModeIsActive())
         {
             cycleTeleop();

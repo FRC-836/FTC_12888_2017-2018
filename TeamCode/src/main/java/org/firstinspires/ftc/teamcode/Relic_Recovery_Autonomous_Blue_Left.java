@@ -23,6 +23,8 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
+        hitJewel(false);
+
         moveStraightEncoder(-2.00, 4.0);
         sleep(1000);
         compassTurn(-60.0);
