@@ -25,8 +25,8 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     private VuforiaLocalizer vuforia;
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-    private final double DRIVE_EN_COUNT_PER_FT = 951.9; // 625.7
+    
+    private final double DRIVE_EN_COUNT_PER_FT = 951.9;
     private final double INTAKE_OPEN_FULLY = 0.0;
     protected final double ENCODER_DRIVE_POWER = 0.25;
     private final double COMPASS_TURN_POWER = 0.5;
@@ -44,9 +44,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         if (INTAKE_OPERATES_BY_POWER) {
-            setIntake(INTAKE_RELEASE_POWER);
-            sleep(500);
-            setIntake(-INTAKE_HOLD_POWER);
+            setIntake(INTAKE_DROP_POWER);
         }
         else
             setIntake(INTAKE_OPEN_FULLY);
