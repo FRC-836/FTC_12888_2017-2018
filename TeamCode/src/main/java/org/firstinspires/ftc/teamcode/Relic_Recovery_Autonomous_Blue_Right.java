@@ -31,14 +31,14 @@ public class Relic_Recovery_Autonomous_Blue_Right extends Autonomous_Parent {
         telemetry.addData("Status","Started");
         telemetry.update();
 
-        lift(0.8);
-        sleep(300);
-        lift(0.2);
-
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
         hitJewel(false);
+
+        lift(0.8);
+        sleep(300);
+        lift(0.2);
 
         moveStraightEncoder(-2.385, 2.0);
         sleep(1000);

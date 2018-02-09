@@ -36,6 +36,9 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     private final boolean USE_LEFT_ENCODER = true; // False means use right encoder
     private final double PICTOGRAPH_SEARCH_TIME = 5.0;
 
+    private final int MIN_BLUE_HUE = 120;
+    private final int MAX_BLUE_HUE = 300;
+
     BNO055IMU imu;
     Orientation angles;
 
@@ -268,20 +271,26 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         moveStraightTime(-0.3, 500);
     }
 
-    private Color getJewelColor() {
-        return Color.UNKNOWN;
+    protected Color getJewelColor() {
+        int hue = getHue(colorSensor.red(),colorSensor.green(),colorSensor.blue());
+        if (hue > MIN_BLUE_HUE && hue < MAX_BLUE_HUE)
+            return Color.BLUE;
+        else
+            return Color.RED;
     }
 
     protected void hitJewel(boolean knockBlueJewel){
         lowerJewelArm();
-        sleep(1500);
+        sleep(2000);
         Color jewelColor = getJewelColor();
-        double DRIVE_DISTANCE = 2.0/12.0;
+        double DRIVE_DISTANCE = 4.0 / 12.0; // Inches -> Feet
         if ((jewelColor == Color.BLUE && knockBlueJewel) || (jewelColor == Color.RED && !knockBlueJewel))
         {
             // Drive Forwards
             moveStraightEncoder(DRIVE_DISTANCE, 1.0);
             sleep(500);
+            raiseJewelArm();
+            sleep(1000);
             moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
         }
         else if ((jewelColor == Color.BLUE && !knockBlueJewel) || (jewelColor == Color.RED && knockBlueJewel))
@@ -289,9 +298,38 @@ public abstract class Autonomous_Parent extends Robot_Parent {
             // Drive Backwards
             moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
             sleep(500);
+            raiseJewelArm();
+            sleep(1000);
             moveStraightEncoder(DRIVE_DISTANCE, 1.0);
         }
-        raiseJewelArm();
+        sleep(1000);
+    }
+
+    // Function from Zarokka
+    // https://stackoverflow.com/questions/23090019/fastest-formula-to-get-hue-from-rgb
+    protected int getHue(int red, int green, int blue) {
+        float min = Math.min(Math.min(red, green), blue);
+        float max = Math.max(Math.max(red, green), blue);
+
+        if (min == max) {
+            return 0;
+        }
+
+        float hue = 0f;
+        if (max == red) {
+            hue = (green - blue) / (max - min);
+
+        } else if (max == green) {
+            hue = 2f + (blue - red) / (max - min);
+
+        } else {
+            hue = 4f + (red - green) / (max - min);
+        }
+
+        hue = hue * 60;
+        if (hue < 0) hue = hue + 360;
+
+        return Math.round(hue);
     }
 }
 

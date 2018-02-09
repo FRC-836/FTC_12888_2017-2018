@@ -14,16 +14,17 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
         holdCube();
 
         telemetry.addData("Status","Started");
-        telemetry.update();
-
-        lift(0.8);
-        sleep(300);
-        lift(0.2);
 
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
         hitJewel(false);
+
+        telemetry.update();
+
+        lift(0.8);
+        sleep(300);
+        lift(0.2);
 
         moveStraightEncoder(-2.00, 4.0);
         sleep(1000);

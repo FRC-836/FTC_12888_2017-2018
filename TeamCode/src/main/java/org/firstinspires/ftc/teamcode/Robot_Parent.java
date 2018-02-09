@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,13 +21,15 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected DcMotor leftIntake = null;
     //protected Servo rightIntake = null;
     protected Servo jewelArm = null;
+    protected ColorSensor colorSensor = null;
+
     protected boolean hasCube = false;
 
     protected final double INTAKE_CLOSE_POSITION = 0.65;
     protected final double INTAKE_OPEN_POSITION = 0.10;
 
-    protected final double JEWEL_DOWN_POSITION = 0.91;
-    protected final double JEWEL_UP_POSITION = 0.47;
+    protected final double JEWEL_DOWN_POSITION = 0.03;
+    protected final double JEWEL_UP_POSITION = 0.48;
 
     protected final double INTAKE_RELEASE_POWER = -0.05;
     protected final double INTAKE_GRAB_POWER = 0.55;
@@ -50,6 +53,7 @@ public abstract class Robot_Parent extends LinearOpMode {
         leftIntake = hardwareMap.get(DcMotor.class, "intakeLeft");
         //rightIntake = hardwareMap.get(Servo.class, "intakeRight");
         jewelArm = hardwareMap.get(Servo.class, "jewelArm");
+        colorSensor = hardwareMap.get(ColorSensor.class, "color");
 
         // Most robots need the motor on one side to be reversed to drive moveStraightTime
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -61,7 +65,7 @@ public abstract class Robot_Parent extends LinearOpMode {
         //leftIntake.setDirection(Servo.Direction.REVERSE);
         leftIntake.setDirection(DcMotor.Direction.FORWARD);
         //rightIntake.setDirection(Servo.Direction.FORWARD);
-        jewelArm.setDirection(Servo.Direction.FORWARD);
+        jewelArm.setDirection(Servo.Direction.REVERSE);
 
         // Set stopping behavior
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

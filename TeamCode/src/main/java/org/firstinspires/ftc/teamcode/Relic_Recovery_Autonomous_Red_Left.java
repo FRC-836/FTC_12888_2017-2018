@@ -31,16 +31,16 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
         telemetry.addData("Status","Started");
         telemetry.update();
 
-        lift(0.8);
-        sleep(300);
-        lift(0.2);
-
         // Read the pictograph
         cryptoboxKey = getPictographKey();
 
         hitJewel(true);
 
-        moveStraightEncoder(3.45, 4.0);
+        lift(0.8);
+        sleep(300);
+        lift(0.2);
+
+        moveStraightEncoder(3.15, 4.0);
         sleep(1000);
 
         switch(cryptoboxKey)
@@ -48,8 +48,8 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
             case LEFT:
                 telemetry.addLine("Left Column");
                 telemetry.update();
-                //moveStraightEncodber(3.625, 3.0);
-                oneWheelCompassTurn(55, true);
+                //moveStraightEncoder(3.625, 3.0);
+                oneWheelCompassTurn(60, true);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
@@ -76,6 +76,7 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
         lift(0.0);
 
         drop();
+        sleep(1000);
         moveStraightTime(-0.3, 500);
         stopIntake();
         sleep(1000);
