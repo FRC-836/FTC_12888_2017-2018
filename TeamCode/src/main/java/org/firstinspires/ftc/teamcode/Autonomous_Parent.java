@@ -26,14 +26,16 @@ public abstract class Autonomous_Parent extends Robot_Parent {
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
-    private final double DRIVE_EN_COUNT_PER_FT = 951.9;
+    private final double DRIVE_EN_COUNT_PER_FT = 1377.5;
+    //private final double SECONDS_PER_FOOT = 0.531;
     private final double INTAKE_OPEN_FULLY = 0.0;
     protected final double ENCODER_DRIVE_POWER = 0.25;
+    protected final double JEWEL_DRIVE_POWER = 0.15;
     private final double COMPASS_TURN_POWER = 0.5;
     // COMPASS_PAUSE_TIME - When using compassTurn, it waits COMPASS_PAUSE_TIME milliseconds before
     // using the compass to ensure the robot has begun moving.
     private final long COMPASS_PAUSE_TIME = 200;
-    private final boolean USE_LEFT_ENCODER = true; // False means use right encoder
+    private final boolean USE_LEFT_ENCODER = false; // False means use right encoder
     private final double PICTOGRAPH_SEARCH_TIME = 5.0;
 
     private final int MIN_BLUE_HUE = 120;
@@ -85,11 +87,22 @@ public abstract class Autonomous_Parent extends Robot_Parent {
     }
 
     protected void moveStraightEncoder(double dist_feet, double maxRuntime_seconds){
+        moveStraightEncoder(dist_feet, maxRuntime_seconds, ENCODER_DRIVE_POWER);
+    }
+
+    protected void moveStraightEncoder(double dist_feet, double maxRuntime_seconds, double drivePower){
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
+
+        /*
+        TURNS ENCODER-BASED CODE INTO TIME-BASED CODE
+        */
+       //maxRuntime_seconds = Math.abs(dist_feet) * SECONDS_PER_FOOT;
+        //dist_feet *= 20.0;
+
         int end_pos = getDriveEncoder() + (int)(dist_feet * DRIVE_EN_COUNT_PER_FT);
         if (dist_feet > 0.0) {
-            setDrive(ENCODER_DRIVE_POWER, ENCODER_DRIVE_POWER);
+            setDrive(drivePower, drivePower);
             while ((getDriveEncoder() < end_pos) && (runtime.seconds() < maxRuntime_seconds) && opModeIsActive()) {
                 telemetry.addData("Goal / End Position","%d", end_pos);
                 telemetry.addData("Current Position","%d", getDriveEncoder());
@@ -98,7 +111,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         }
         else
         {
-            setDrive(-ENCODER_DRIVE_POWER, -ENCODER_DRIVE_POWER);
+            setDrive(-drivePower, -drivePower);
             while ((getDriveEncoder() > end_pos) && (runtime.seconds() < maxRuntime_seconds) && opModeIsActive()) {
                 telemetry.addData("Goal / End Position","%d", end_pos);
                 telemetry.addData("Current Position","%d", getDriveEncoder());
@@ -266,7 +279,7 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         grab();
         sleep(500);
         holdCube();
-        moveStraightTime(0.15, 1000);
+        moveStraightTime(0.10, 1500);
         sleep(1000);
         moveStraightTime(-0.3, 500);
     }
@@ -283,24 +296,24 @@ public abstract class Autonomous_Parent extends Robot_Parent {
         lowerJewelArm();
         sleep(2000);
         Color jewelColor = getJewelColor();
-        double DRIVE_DISTANCE = 4.0 / 12.0; // Inches -> Feet
+        double DRIVE_DISTANCE = 2.5 / 12.0; // Inches -> Feet
         if ((jewelColor == Color.BLUE && knockBlueJewel) || (jewelColor == Color.RED && !knockBlueJewel))
         {
             // Drive Forwards
-            moveStraightEncoder(DRIVE_DISTANCE, 1.0);
-            sleep(500);
+            moveStraightEncoder(DRIVE_DISTANCE, 1.0, JEWEL_DRIVE_POWER);
+            sleep(1000);
             raiseJewelArm();
             sleep(1000);
-            moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
+            moveStraightEncoder(-DRIVE_DISTANCE, 1.0, JEWEL_DRIVE_POWER);
         }
         else if ((jewelColor == Color.BLUE && !knockBlueJewel) || (jewelColor == Color.RED && knockBlueJewel))
         {
             // Drive Backwards
-            moveStraightEncoder(-DRIVE_DISTANCE, 1.0);
-            sleep(500);
+            moveStraightEncoder(-DRIVE_DISTANCE, 1.0, JEWEL_DRIVE_POWER);
+            sleep(1000);
             raiseJewelArm();
             sleep(1000);
-            moveStraightEncoder(DRIVE_DISTANCE, 1.0);
+            moveStraightEncoder(DRIVE_DISTANCE + (1.0 / 12.0), 1.0, JEWEL_DRIVE_POWER);
         }
         sleep(1000);
     }

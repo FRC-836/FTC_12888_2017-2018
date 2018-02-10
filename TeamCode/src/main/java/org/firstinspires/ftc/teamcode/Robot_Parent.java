@@ -28,7 +28,7 @@ public abstract class Robot_Parent extends LinearOpMode {
     protected final double INTAKE_CLOSE_POSITION = 0.65;
     protected final double INTAKE_OPEN_POSITION = 0.10;
 
-    protected final double JEWEL_DOWN_POSITION = 0.03;
+    protected final double JEWEL_DOWN_POSITION = 0.02;
     protected final double JEWEL_UP_POSITION = 0.48;
 
     protected final double INTAKE_RELEASE_POWER = -0.05;

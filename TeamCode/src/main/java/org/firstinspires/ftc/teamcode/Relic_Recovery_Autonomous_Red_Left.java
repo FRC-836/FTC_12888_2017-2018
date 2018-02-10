@@ -40,7 +40,7 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
         sleep(300);
         lift(0.2);
 
-        moveStraightEncoder(3.15, 4.0);
+        moveStraightEncoder(3.00, 4.0);
         sleep(1000);
 
         switch(cryptoboxKey)
@@ -49,7 +49,7 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
                 telemetry.addLine("Left Column");
                 telemetry.update();
                 //moveStraightEncoder(3.625, 3.0);
-                oneWheelCompassTurn(60, true);
+                oneWheelCompassTurn(55, true);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
@@ -57,13 +57,13 @@ public class Relic_Recovery_Autonomous_Red_Left extends Autonomous_Parent {
                 telemetry.addLine("Center Column");
                 telemetry.update();
                 //moveStraightEncoder(3.0, 2.5);
-                oneWheelCompassTurn(70, true);
+                oneWheelCompassTurn(65, true);
                 break;
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
                 //moveStraightEncoder(2.375, 2.0);
-                oneWheelCompassTurn(85, true);
+                oneWheelCompassTurn(75, true);
                 break;
         }
         sleep(1000);

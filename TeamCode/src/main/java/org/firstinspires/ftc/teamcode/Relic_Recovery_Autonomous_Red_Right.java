@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
 @Autonomous(name="Red Right", group="Competition")
 public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
 
@@ -30,7 +32,7 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
                 moveStraightEncoder(1.95, 4.0);
                 holdCube();
                 sleep(1000);
-                compassTurn(-45.0);
+                compassTurn(-43.0);
                 break;
             case CENTER:
                 telemetry.addLine("Center Column");
@@ -38,17 +40,17 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
                 moveStraightEncoder(1.95, 4.0);
                 holdCube();
                 sleep(1000);
-                compassTurn(-35.0);
+                compassTurn(-28.0);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
-                moveStraightEncoder(1.95, 4.0);
+                moveStraightEncoder(1.90, 4.0);
                 holdCube();
                 sleep(1000);
-                oneWheelCompassTurn(-25.0, true);
+                oneWheelCompassTurn(-13.0, true);
                 break;
         }
         sleep(1000);
@@ -57,7 +59,7 @@ public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
         //CODE BELOW THIS POINT WAS DELETED AND RE-ADDED
 
         lift(-0.1);
-        moveStraightTime(0.3,1000);
+        moveStraightTime(0.3,800);
         lift(0.0);
         sleep(1000);
 
