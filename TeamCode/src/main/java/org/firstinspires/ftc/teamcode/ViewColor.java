@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-/**
- * Created by user on 2/8/2018.
- */
 @Autonomous(name = "View Color", group = "sensor")
 public class ViewColor extends Autonomous_Parent{
     @Override

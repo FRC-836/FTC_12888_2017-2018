@@ -37,23 +37,29 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
             case LEFT:
                 telemetry.addLine("Left Column");
                 telemetry.update();
-                compassTurn(-215.0);
+                compassTurn(-120.0);
                 sleep(1000);
-                moveStraightEncoder(0.95, 3.0);
+                oneWheelCompassTurn(-57, false);
+                sleep(1000);
+                moveStraightEncoder(1.50, 3.0);
                 break;
             case CENTER:
                 telemetry.addLine("Center Column");
                 telemetry.update();
-                compassTurn(-190.0);
+                compassTurn(-120.0);
                 sleep(1000);
-                moveStraightEncoder(0.75, 3.0);
+                oneWheelCompassTurn(-49, false);
+                sleep(1000);
+                moveStraightEncoder(1.15, 3.0);
                 break;
             default:
                 telemetry.addLine("Saw nothing");
             case RIGHT:
                 telemetry.addLine("Right Column");
                 telemetry.update();
-                compassTurn(-170.0);
+                compassTurn(-120.0);
+                sleep(1000);
+                oneWheelCompassTurn(-39, false);
                 sleep(1000);
                 moveStraightEncoder(0.50, 3.0);
                 break;
@@ -64,18 +70,25 @@ public class Relic_Recovery_Autonomous_Blue_Left extends Autonomous_Parent {
         //CODE BELOW THIS POINT WAS DELETED AND RE-ADDED
 
         lift(-0.1);
-        moveStraightTime(0.3,500);
+        moveStraightTime(0.4,500);
         lift(0.0);
 
         drop();
-        moveStraightTime(-0.3, 500);
+        sleep(1000);
+        oneWheelCompassTurn(-20, false);
+        moveStraightEncoder(-0.3,3.0);
         stopIntake();
         sleep(1000);
-        pushCube();
+        if (cryptoboxKey != RelicRecoveryVuMark.LEFT)
+        {
+            pushCube();
+        }
 
         if (cryptoboxKey== RelicRecoveryVuMark.RIGHT) {
             oneWheelCompassTurn(-50.0, false);
             moveStraightTime(0.3, 1000);
         }
+
+
     }
 }

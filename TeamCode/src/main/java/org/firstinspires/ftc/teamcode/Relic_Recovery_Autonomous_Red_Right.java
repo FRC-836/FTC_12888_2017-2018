@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-
 @Autonomous(name="Red Right", group="Competition")
 public class Relic_Recovery_Autonomous_Red_Right extends Autonomous_Parent {
 
